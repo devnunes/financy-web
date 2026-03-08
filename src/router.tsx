@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Login from './pages/Login'
+import Login from './pages/Auth/Login'
+import SignUp from './pages/Auth/SignUp'
 
 function RootRedirect() {
   const isAuthenticated = false
@@ -11,6 +12,7 @@ export default function Router() {
     <Routes>
       <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/cadastro" element={<SignUp />} />
     </Routes>
   )
 }

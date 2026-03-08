@@ -1,4 +1,5 @@
-import { UserRoundPlus } from 'lucide-react'
+import { Lock, Mail, UserRoundPlus } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import Logo from '@/assets/images/Logo.svg'
 import CustomLink from '@/components/ui/CustomLink'
 import { Input } from '@/components/ui/Input'
@@ -16,8 +17,18 @@ export default function Login() {
           </span>
         </div>
         <div className="flex flex-col gap-4 w-full">
-          <Input label="Email" type="email" placeholder="mail@example.com" />
-          <Input label="Senha" type="password" placeholder="Digite sua senha" />
+          <Input
+            label="Email"
+            type="email"
+            placeholder="mail@example.com"
+            leftIcon={<Mail className="text-gray-400" size={16} />}
+          />
+          <Input
+            label="Senha"
+            type="password"
+            placeholder="Digite sua senha"
+            leftIcon={<Lock className="text-gray-400" size={16} />}
+          />
           <div className="flex items-center justify-between gap-2">
             <span className="flex items-center gap-1 text-sm text-gray-700 self-start cursor-pointer">
               <input type="checkbox" />
@@ -41,12 +52,14 @@ export default function Login() {
         <span className="mb-4 text-sm text-gray-600">
           Ainda não tem uma conta?
         </span>
-        <LabelButton
-          className="w-full h-12"
-          variant="outline"
-          label="Criar conta"
-          icon={<UserRoundPlus />}
-        />
+        <Link className="w-full h-12" to="/cadastro">
+          <LabelButton
+            className="w-full h-12"
+            variant="outline"
+            label="Criar conta"
+            icon={<UserRoundPlus className="text-gray-700" size={18} />}
+          />
+        </Link>
       </div>
     </>
   )

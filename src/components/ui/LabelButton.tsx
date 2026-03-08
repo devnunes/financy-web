@@ -7,7 +7,7 @@ type LabelButtonState = 'default' | 'disabled'
 type LabelButtonVariant = 'solid' | 'outline'
 
 const labelButtonStyles = tv({
-  base: 'text-base inline-flex items-center justify-center gap-2 rounded-lg border font-semibold transition-colors',
+  base: 'text-base inline-flex items-center justify-center gap-2 rounded-lg border font-semibold transition-colors hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
   variants: {
     variant: {
       solid: 'border-primary text-white bg-primary hover:bg-primary-dark',

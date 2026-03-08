@@ -113,4 +113,9 @@
   #root, #__next {
     isolation: isolate;
   }
+  
+  input,
+  input::focus {
+    outline: none;
+  }
 } 
