@@ -7,49 +7,49 @@
 
 @theme {
   /* Brand */
-  --color-brand-base: #1F6F43;
-  --color-brand-dark: #124B2B;
+  --color-brand-base: #1f6f43;
+  --color-brand-dark: #124b2b;
 
   /* Grayscale */
-  --color-gray-100: #F8F9FA;
-  --color-gray-200: #E5E7EB;
-  --color-gray-300: #D1D5DB;
-  --color-gray-400: #9CA3AF;
-  --color-gray-500: #6B7280;
-  --color-gray-600: #4B5563;
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
   --color-gray-700: #374151;
   --color-gray-800: #111827;
 
   /* Neutral */
   --color-black: #000000;
-  --color-white: #FFFFFF;
-  --color-danger: #EF4444;
-  --color-success: #19AD70;
+  --color-white: #ffffff;
+  --color-danger: #ef4444;
+  --color-success: #19ad70;
 
   /* Colors */
   --color-primary: var(--color-brand-base);
   --color-primary-dark: var(--color-brand-dark);
-  --color-blue-dark: #1D4ED8;
-  --color-blue-base: #2563EB;
-  --color-blue-light: #DBEAFE;
-  --color-pink-dark: #BE185D;
-  --color-pink-base: #DB2777;
-  --color-pink-light: #FCE7F3;
-  --color-orange-dark: #C2410C;
-  --color-orange-base: #EA580C;
-  --color-orange-light: #FFEDD5;
-  --color-green-dark: #15803D;
-  --color-green-base: #16A34A;
-  --color-green-light: #D1FAE5;
-  --color-purple-dark: #7E22CE;
-  --color-purple-base: #9333EA;
-  --color-purple-light: #F3E8FF;
-  --color-red-dark: #B91C1C;
-  --color-red-base: #DC2626;
-  --color-red-light: #FEE2E2;
-  --color-yellow-dark: #A16207;
-  --color-yellow-base: #CA8A04;
-  --color-yellow-light: #F7F3CA;
+  --color-blue-dark: #1d4ed8;
+  --color-blue-base: #2563eb;
+  --color-blue-light: #dbeafe;
+  --color-pink-dark: #be185d;
+  --color-pink-base: #db2777;
+  --color-pink-light: #fce7f3;
+  --color-orange-dark: #c2410c;
+  --color-orange-base: #ea580c;
+  --color-orange-light: #ffedd5;
+  --color-green-dark: #15803d;
+  --color-green-base: #16a34a;
+  --color-green-light: #d1fae5;
+  --color-purple-dark: #7e22ce;
+  --color-purple-base: #9333ea;
+  --color-purple-light: #f3e8ff;
+  --color-red-dark: #b91c1c;
+  --color-red-base: #dc2626;
+  --color-red-light: #fee2e2;
+  --color-yellow-dark: #a16207;
+  --color-yellow-base: #ca8a04;
+  --color-yellow-light: #f7f3ca;
 }
 
 :root {
@@ -94,7 +94,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0.00 0);
+  --primary: oklch(0.87 0 0);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -122,7 +122,7 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter Variable', sans-serif;
+  --font-sans: "Inter Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
