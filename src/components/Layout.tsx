@@ -6,9 +6,11 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="h-dvh bg-gray-200">
+    <div className="h-dvh">
       <Header />
-      <main className="p-12">{children}</main>
+      <main className="p-12 flex flex-col items-center justify-center">
+        {children}
+      </main>
     </div>
   )
 }
