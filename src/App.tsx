@@ -1,7 +1,13 @@
-import './App.css'
+import { BrowserRouter } from 'react-router-dom'
+import Router from '@/router'
+import { Layout } from './components/Layout'
 
-function App() {
-	return <h1 className="text-3xl font-bold underline text-danger">Financy</h1>
+export default function App() {
+  return (
+    <Layout>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </Layout>
+  )
 }
-
-export default App
