@@ -12,10 +12,10 @@ export default function App() {
   }, [syncSession])
 
   return (
-    <Layout>
-      <BrowserRouter>
+    <BrowserRouter>
+      <Layout>
         <Router />
-      </BrowserRouter>
-    </Layout>
+      </Layout>
+    </BrowserRouter>
   )
 }

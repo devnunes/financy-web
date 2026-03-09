@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Dashboard from '@/pages/Auth/Dashboard'
 import SignIn from '@/pages/Auth/SignIn'
+import Categories from '@/pages/Categories'
+import Dashboard from '@/pages/Dashboard'
+import Transactions from '@/pages/Transactions'
 import SignUp from '../pages/Auth/SignUp'
 import { useAuthStore } from '../stores/authStore'
 import MissingAuthenticationRoute from './MissingAutheticationRoute'
@@ -28,6 +30,8 @@ export default function Router() {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/categories" element={<Categories />} />
       </Route>
     </Routes>
   )
