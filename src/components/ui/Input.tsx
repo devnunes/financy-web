@@ -1,25 +1,18 @@
 import { ChevronDown } from 'lucide-react'
-import type * as React from 'react'
+import * as React from 'react'
 import { tv } from 'tailwind-variants'
 
 import { cn } from '@/lib/utils'
 
-type InputState =
-  | 'default'
-  | 'active'
-  | 'filled'
-  | 'error'
-  | 'disabled'
-  | 'select'
+type InputState = 'default' | 'filled' | 'error' | 'disabled' | 'select'
 
 const inputWrapper = tv({
   base: 'flex items-center text-base gap-2 h-12 rounded-lg border bg-white px-3 transition-colors',
   variants: {
     state: {
       default: 'border-gray-300',
-      active: 'border-primary ring-2 ring-primary/20',
       filled: 'border-gray-400',
-      error: 'border-red-base ring-2 ring-red-base/20',
+      error: 'border-gray-300',
       disabled: 'border-gray-200 bg-gray-100',
       select: 'border-gray-300 cursor-pointer',
     },
@@ -39,57 +32,76 @@ export interface InputProps
   rightIcon?: React.ReactNode
 }
 
-export function Input({
-  className,
-  label,
-  helperText,
-  errorText,
-  state = 'default',
-  leftIcon,
-  rightIcon,
-  disabled,
-  readOnly,
-  value,
-  ...props
-}: InputProps) {
-  const isDisabled = disabled || state === 'disabled'
-  const isSelect = state === 'select'
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      className,
+      label,
+      helperText,
+      errorText,
+      state = 'default',
+      leftIcon,
+      rightIcon,
+      disabled,
+      readOnly,
+      value,
+      ...props
+    },
+    ref
+  ) => {
+    const isDisabled = disabled || state === 'disabled'
+    const isSelect = state === 'select'
 
-  return (
-    <div className="group flex w-full flex-col gap-2">
-      {label ? (
-        <span className="text-sm font-medium text-gray-700 group-focus-within:text-primary">
-          {label}
+    return (
+      <div className="group flex w-full flex-col gap-2">
+        {label ? (
+          <span
+            className={cn('text-sm font-medium', {
+              'text-danger': state === 'error',
+              'text-gray-700 group-focus-within:text-primary':
+                state !== 'error',
+            })}
+          >
+            {label}
+          </span>
+        ) : null}
+
+        <span className={cn(inputWrapper({ state }), className)}>
+          <div className="flex items-center gap-3 flex-1">
+            {leftIcon ? (
+              <span
+                className={cn('text-gray-400 transition-colors', {
+                  '[&_svg]:text-danger': state === 'error',
+                  'group-focus-within:[&_svg]:text-primary': state !== 'error',
+                })}
+              >
+                {leftIcon}
+              </span>
+            ) : null}
+            <input
+              ref={ref}
+              className="focus:outline-none text-gray-800 placeholder:text-gray-400"
+              disabled={isDisabled}
+              readOnly={readOnly || isSelect}
+              value={value}
+              {...props}
+            />
+          </div>
+          {isSelect ? (
+            <ChevronDown className="size-4 text-gray-500" />
+          ) : (
+            rightIcon
+          )}
         </span>
-      ) : null}
 
-      <span className={cn(inputWrapper({ state }), className)}>
-        <div className="flex items-center gap-3 flex-1">
-          {leftIcon ? (
-            <span className="text-gray-400 transition-colors group-focus-within:[&_svg]:text-primary">
-              {leftIcon}
-            </span>
-          ) : null}
-          <input
-            className="focus:outline-none text-gray-800 placeholder:text-gray-400"
-            disabled={isDisabled}
-            readOnly={readOnly || isSelect}
-            value={value}
-            {...props}
-          />
-        </div>
-        {isSelect ? (
-          <ChevronDown className="size-4 text-gray-500" />
-        ) : (
-          rightIcon
-        )}
-      </span>
+        {state === 'error' && errorText ? (
+          <span className="text-xs text-gray-500">{errorText}</span>
+        ) : helperText ? (
+          <span className="text-xs text-gray-500">{helperText}</span>
+        ) : null}
+      </div>
+    )
+  }
+)
 
-      {state === 'error' && errorText ? (
-        <span className="text-xs text-red-base">{errorText}</span>
-      ) : helperText ? (
-        <span className="text-xs text-gray-500">{helperText}</span>
-      ) : null}
-    </div>
-  )
-}
+Input.displayName = 'Input'
