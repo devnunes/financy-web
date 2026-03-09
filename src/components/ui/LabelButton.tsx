@@ -21,7 +21,7 @@ const labelButtonStyles = tv({
 })
 
 export interface LabelButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label: string
   icon?: React.ReactNode
   variant?: LabelButtonVariant

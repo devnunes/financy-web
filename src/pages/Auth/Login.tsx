@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EyeClosed, Lock, Mail, UserRoundPlus } from 'lucide-react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { z } from 'zod/v4'
@@ -7,6 +8,7 @@ import Logo from '@/assets/images/Logo.svg'
 import CustomLink from '@/components/ui/CustomLink'
 import { Input } from '@/components/ui/Input'
 import { LabelButton } from '@/components/ui/LabelButton'
+import { useAuthStore } from '@/stores/authStore'
 
 const loginSchema = z.object({
   email: z.email({ message: 'Digite um email válido' }),
@@ -18,6 +20,8 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>
 
 export default function Login() {
+  const [loading, setLoading] = React.useState(false)
+  const login = useAuthStore(state => state.signIn)
   const {
     register,
     handleSubmit,
@@ -25,7 +29,16 @@ export default function Login() {
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) })
 
   const onSubmit = (data: LoginFormData) => {
-    console.log('Login data:', data, errors)
+    setLoading(true)
+    login(data)
+      .then(() => {
+        // Redirecionar ou mostrar mensagem de sucesso
+      })
+      .catch(error => {
+        // Mostrar mensagem de erro
+        console.error('Login failed:', error)
+      })
+      .finally(() => setLoading(false))
   }
 
   return (
@@ -84,7 +97,12 @@ export default function Login() {
             />
           </div>
           <div className="flex flex-col items-center gap-6 w-full my-6">
-            <LabelButton type="submit" className="w-full h-12" label="Entrar" />
+            <LabelButton
+              type="submit"
+              className="w-full h-12"
+              label="Entrar"
+              disabled={loading}
+            />
             <div className="flex items-center justify-center gap-3 w-full">
               <div className="h-px border-t border-gray-300 flex-1" />
               <span className="text-sm leading-5 text-gray-500">ou</span>
