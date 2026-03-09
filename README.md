@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# Financy Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação frontend do Financy, desenvolvida como parte do **trabalho final de pós-graduação na Faculdade de Tecnologia Rocketseat**.
 
-Currently, two official plugins are available:
+## Objetivo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Entregar a interface web para autenticação e gerenciamento financeiro dos usuários, consumindo a API GraphQL do projeto.
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite
+- Apollo Client (GraphQL)
+- React Hook Form + Zod
+- Zustand (estado global de autenticação)
+- Tailwind CSS
+- Biome
 
-## Expanding the ESLint configuration
+## Funcionalidades atuais
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Autenticação
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Tela de login
+- Tela de cadastro
+- Validação de formulário com Zod
+- Sincronização de sessão com `me`
+- Controle de acesso com rotas protegidas e rotas públicas
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Navegação autenticada
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `/dashboard`
+- `/transactions`
+- `/categories`
+
+> As páginas de dashboard, transações e categorias já existem, porém ainda estão em estágio inicial de interface e integração completa de CRUD.
+
+## Estrutura resumida
+
+- `src/pages/Auth`: páginas de autenticação e área privada
+- `src/router`: definição e proteção de rotas
+- `src/lib/graphql`: client Apollo, queries e mutations
+- `src/stores`: estado global (auth)
+- `src/components`: layout e componentes reutilizáveis
+
+## Integração com backend
+
+O Apollo Client está configurado para:
+
+- URL GraphQL: `http://localhost:3333/graphql`
+- `credentials: include` para sessão por cookie
+
+## Como rodar
+
+```bash
+pnpm install
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Aplicação disponível em `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Scripts úteis
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm dev
+pnpm build
+pnpm preview
+pnpm format
+pnpm lint
+pnpm check:biome
 ```
