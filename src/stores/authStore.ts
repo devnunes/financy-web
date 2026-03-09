@@ -30,10 +30,27 @@ interface AuthState {
   syncSession: () => Promise<void>
   signUp: (data: SignUpInput) => Promise<void>
   signIn: (data: SignInInput) => Promise<void>
+  signOut: () => Promise<void>
 }
 
 type MeQueryResponse = {
   me: User
+}
+
+function getInitials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map(namePart => namePart[0])
+    .join('')
+    .toUpperCase()
+}
+
+function withInitials(user: User): User {
+  return {
+    ...user,
+    initials: getInitials(user.name),
+  }
 }
 
 enableMapSet()
@@ -54,9 +71,10 @@ export const useAuthStore = create<AuthState>()(
         if (!data?.me) {
           throw new Error('Session not found')
         }
+        const user = withInitials(data.me)
 
         set(state => {
-          state.user = data.me
+          state.user = user
           state.isAuthenticated = true
         })
       } catch {
@@ -87,7 +105,8 @@ export const useAuthStore = create<AuthState>()(
           },
         })
         if (!data?.register) throw new Error('SignUp failed')
-        const { user } = data.register
+        const user = withInitials(data.register.user)
+
         set(state => {
           state.user = user
           state.isAuthenticated = true
@@ -116,7 +135,8 @@ export const useAuthStore = create<AuthState>()(
           },
         })
         if (!data?.login) throw new Error('SignIn failed')
-        const { user } = data.login
+        const user = withInitials(data.login.user)
+
         set(state => {
           state.user = user
           state.isAuthenticated = true
@@ -130,6 +150,20 @@ export const useAuthStore = create<AuthState>()(
       }
     }
 
+    async function signOut() {
+      set(state => {
+        state.user = null
+        state.isAuthenticated = false
+        state.isCheckingSession = false
+      })
+
+      try {
+        await apolloClient.clearStore()
+      } catch {
+        // Keep the user signed out locally even if cache clearing fails.
+      }
+    }
+
     return {
       user: null,
       isAuthenticated: false,
@@ -137,6 +171,7 @@ export const useAuthStore = create<AuthState>()(
       syncSession,
       signUp,
       signIn,
+      signOut,
     }
   })
 )
