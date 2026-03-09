@@ -14,7 +14,7 @@ function RootRedirect() {
     return null
   }
 
-  return <Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />
+  return <Navigate to={isAuthenticated ? '/dashboard' : '/sign-in'} replace />
 }
 
 export default function Router() {

@@ -16,7 +16,7 @@ type SignUpMutationResponse = {
 }
 
 type SignInMutationResponse = {
-  login: {
+  signIn: {
     token: string
     refreshToken: string
     user: User
@@ -134,8 +134,8 @@ export const useAuthStore = create<AuthState>()(
             },
           },
         })
-        if (!data?.login) throw new Error('SignIn failed')
-        const user = withInitials(data.login.user)
+        if (!data?.signIn) throw new Error('SignIn failed')
+        const user = withInitials(data.signIn.user)
 
         set(state => {
           state.user = user
