@@ -32,7 +32,7 @@ export default function Login() {
     setLoading(true)
     login(data)
       .then(() => {
-        // Redirecionar ou mostrar mensagem de sucesso
+        console.info('Login successful')
       })
       .catch(error => {
         // Mostrar mensagem de erro
