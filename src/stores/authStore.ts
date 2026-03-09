@@ -2,12 +2,12 @@ import { enableMapSet } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient } from '@/lib/graphql/apollo'
-import { LOGIN } from '@/lib/graphql/mutations/Login'
-import { REGISTER } from '@/lib/graphql/mutations/Register'
+import { SIGN_IN } from '@/lib/graphql/mutations/SignIn'
+import { SIGN_UP } from '@/lib/graphql/mutations/SignUp'
 import { ME } from '@/lib/graphql/queries/Me'
-import type { LoginInput, RegisterInput, User } from '@/types'
+import type { SignInInput, SignUpInput, User } from '@/types'
 
-type RegisterMutationResponse = {
+type SignUpMutationResponse = {
   register: {
     token: string
     refreshToken: string
@@ -15,7 +15,7 @@ type RegisterMutationResponse = {
   }
 }
 
-type LoginMutationResponse = {
+type SignInMutationResponse = {
   login: {
     token: string
     refreshToken: string
@@ -28,8 +28,8 @@ interface AuthState {
   isAuthenticated: boolean
   isCheckingSession: boolean
   syncSession: () => Promise<void>
-  signUp: (data: RegisterInput) => Promise<void>
-  signIn: (data: LoginInput) => Promise<void>
+  signUp: (data: SignUpInput) => Promise<void>
+  signIn: (data: SignInInput) => Promise<void>
 }
 
 type MeQueryResponse = {
@@ -71,22 +71,22 @@ export const useAuthStore = create<AuthState>()(
       }
     }
 
-    async function signUp(registerData: RegisterInput) {
+    async function signUp(signUpData: SignUpInput) {
       try {
         const { data } = await apolloClient.mutate<
-          RegisterMutationResponse,
-          { data: RegisterInput }
+          SignUpMutationResponse,
+          { data: SignUpInput }
         >({
-          mutation: REGISTER,
+          mutation: SIGN_UP,
           variables: {
             data: {
-              name: registerData.name,
-              email: registerData.email,
-              password: registerData.password,
+              name: signUpData.name,
+              email: signUpData.email,
+              password: signUpData.password,
             },
           },
         })
-        if (!data?.register) throw new Error('Registration failed')
+        if (!data?.register) throw new Error('SignUp failed')
         const { user } = data.register
         set(state => {
           state.user = user
@@ -95,27 +95,27 @@ export const useAuthStore = create<AuthState>()(
         })
       } catch (error) {
         throw new Error(
-          'Registration failed: ' +
+          'SignUp failed: ' +
             (error instanceof Error ? error.message : String(error))
         )
       }
     }
 
-    async function signIn(loginData: LoginInput) {
+    async function signIn(signInData: SignInInput) {
       try {
         const { data } = await apolloClient.mutate<
-          LoginMutationResponse,
-          { data: LoginInput }
+          SignInMutationResponse,
+          { data: SignInInput }
         >({
-          mutation: LOGIN,
+          mutation: SIGN_IN,
           variables: {
             data: {
-              email: loginData.email,
-              password: loginData.password,
+              email: signInData.email,
+              password: signInData.password,
             },
           },
         })
-        if (!data?.login) throw new Error('Login failed')
+        if (!data?.login) throw new Error('SignIn failed')
         const { user } = data.login
         set(state => {
           state.user = user
@@ -124,7 +124,7 @@ export const useAuthStore = create<AuthState>()(
         })
       } catch (error) {
         throw new Error(
-          'Login failed: ' +
+          'SignIn failed: ' +
             (error instanceof Error ? error.message : String(error))
         )
       }

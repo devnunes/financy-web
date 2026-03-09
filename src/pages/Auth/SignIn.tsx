@@ -10,33 +10,33 @@ import { Input } from '@/components/ui/Input'
 import { LabelButton } from '@/components/ui/LabelButton'
 import { useAuthStore } from '@/stores/authStore'
 
-const loginSchema = z.object({
+const signInSchema = z.object({
   email: z.email({ message: 'Digite um email válido' }),
   password: z
     .string()
     .min(8, { message: 'A senha deve conter no mínimo 8 caracteres' }),
 })
 
-type LoginFormData = z.infer<typeof loginSchema>
+type SignInFormData = z.infer<typeof signInSchema>
 
-export default function Login() {
+export default function SignIn() {
   const [loading, setLoading] = React.useState(false)
-  const login = useAuthStore(state => state.signIn)
+  const signIn = useAuthStore(state => state.signIn)
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) })
+  } = useForm<SignInFormData>({ resolver: zodResolver(signInSchema) })
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = (data: SignInFormData) => {
     setLoading(true)
-    login(data)
+    signIn(data)
       .then(() => {
-        console.info('Login successful')
+        console.info('SignIn successful')
       })
       .catch(error => {
         // Mostrar mensagem de erro
-        console.error('Login failed:', error)
+        console.error('SignIn failed:', error)
       })
       .finally(() => setLoading(false))
   }
@@ -46,7 +46,7 @@ export default function Login() {
       <img src={Logo} alt="Logo" className="mb-8 h-8" />
       <div className="flex flex-col items-center justify-start p-8 bg-white border-0 border-gray-200 rounded-lg w-md">
         <div className="flex flex-col items-center gap-1 mb-8">
-          <span className="text-xl font-extrabold">Fazer Login</span>
+          <span className="text-xl font-extrabold">Fazer login</span>
           <span className="text-base text-gray-600">
             Entre na sua conta para continuar
           </span>
@@ -91,7 +91,7 @@ export default function Login() {
               Lembrar-me
             </span>
             <CustomLink
-              to="/register"
+              to="/recuperar-senha"
               className="text-sm self-end cursor-pointer"
               text="Recuperar senha"
             />

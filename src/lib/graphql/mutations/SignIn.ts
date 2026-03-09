@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
-export const LOGIN = gql`
-  mutation Login($data: LoginInput!) {
+export const SIGN_IN = gql`
+  mutation SignIn($data: LoginInput!) {
     login(data: $data) {
       token
       refreshToken
@@ -11,7 +11,6 @@ export const LOGIN = gql`
         email
         createdAt
         updatedAt
-        
       }
     }
   }

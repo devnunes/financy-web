@@ -37,7 +37,7 @@ export default function SignUp() {
       })
       .catch(error => {
         // Mostrar mensagem de erro
-        console.error('Registration failed:', error)
+        console.error('SignUp failed:', error)
       })
       .finally(() => setLoading(false))
   }

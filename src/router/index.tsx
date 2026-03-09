@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Dashboard from '@/pages/Auth/Dashboard'
-import Login from '../pages/Auth/Login'
+import SignIn from '@/pages/Auth/SignIn'
 import SignUp from '../pages/Auth/SignUp'
 import { useAuthStore } from '../stores/authStore'
 import MissingAuthenticationRoute from './MissingAutheticationRoute'
@@ -23,8 +23,8 @@ export default function Router() {
       <Route path="/" element={<RootRedirect />} />
 
       <Route element={<MissingAuthenticationRoute />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/cadastro" element={<SignUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />

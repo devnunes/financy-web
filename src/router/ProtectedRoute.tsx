@@ -5,7 +5,7 @@ export default function ProtectedRoute() {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated)
   const isCheckingSession = useAuthStore(state => state.isCheckingSession)
   if (isCheckingSession) return null
-  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (!isAuthenticated) return <Navigate to="/sign-in" replace />
 
   return <Outlet />
 }

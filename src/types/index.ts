@@ -6,13 +6,13 @@ export interface User {
   updatedAt?: string
 }
 
-export interface RegisterInput {
+export interface SignUpInput {
   name: string
   email: string
   password: string
 }
 
-export interface LoginInput {
+export interface SignInInput {
   email: string
   password: string
 }
