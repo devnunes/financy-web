@@ -25,7 +25,6 @@ type LoginMutationResponse = {
 
 interface AuthState {
   user: User | null
-  // token: string | null
   isAuthenticated: boolean
   signUp: (data: RegisterInput) => Promise<void>
   signIn: (data: LoginInput) => Promise<void>
@@ -52,10 +51,9 @@ export const useAuthStore = create<AuthState>()(
             },
           })
           if (!data?.register) throw new Error('Registration failed')
-          const { token, user } = data.register
+          const { user } = data.register
           set(state => {
             state.user = user
-            // state.token = token
             state.isAuthenticated = true
           })
         } catch (error) {
@@ -81,10 +79,9 @@ export const useAuthStore = create<AuthState>()(
             },
           })
           if (!data?.login) throw new Error('Login failed')
-          const { token, user } = data.login
+          const { user } = data.login
           set(state => {
             state.user = user
-            // state.token = token
             state.isAuthenticated = true
           })
         } catch (error) {
@@ -97,7 +94,6 @@ export const useAuthStore = create<AuthState>()(
 
       return {
         user: null,
-        // token: null,
         isAuthenticated: false,
         signUp,
         signIn,
@@ -108,7 +104,6 @@ export const useAuthStore = create<AuthState>()(
       storage: createJSONStorage(() => localStorage),
       partialize: state => ({
         user: state.user,
-        // token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
     }
