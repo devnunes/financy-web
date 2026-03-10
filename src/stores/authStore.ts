@@ -1,4 +1,3 @@
-import { enableMapSet } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient } from '@/lib/graphql/apollo'
@@ -52,8 +51,6 @@ function withInitials(user: User): User {
     initials: getInitials(user.name),
   }
 }
-
-enableMapSet()
 
 export const useAuthStore = create<AuthState>()(
   immer((set, _get) => {
