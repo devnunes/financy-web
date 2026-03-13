@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { EyeClosed, Lock, LogIn, Mail, User } from 'lucide-react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 import z from 'zod/v4'
 import Logo from '@/assets/images/Logo.svg'
 import { Input } from '@/components/ui/Input'
@@ -100,12 +101,14 @@ export default function SignUp() {
           </div>
         </form>
         <span className="mb-4 text-sm text-gray-600">Já tem uma conta?</span>
-        <LabelButton
-          className="w-full h-12"
-          variant="outline"
-          label="Fazer login"
-          icon={<LogIn className="text-gray-700" size={18} />}
-        />
+        <Link className="w-full h-12" to="/sign-in">
+          <LabelButton
+            className="w-full h-12"
+            variant="outline"
+            label="Fazer login"
+            icon={<LogIn className="text-gray-700" size={18} />}
+          />
+        </Link>
       </div>
     </>
   )

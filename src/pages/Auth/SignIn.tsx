@@ -113,7 +113,7 @@ export default function SignIn() {
         <span className="mb-4 text-sm text-gray-600">
           Ainda não tem uma conta?
         </span>
-        <Link className="w-full h-12" to="/cadastro">
+        <Link className="w-full h-12" to="/sign-up">
           <LabelButton
             className="w-full h-12"
             variant="outline"
