@@ -14,10 +14,8 @@ export function TransactionRow({
   transaction,
   // ...props
 }: TransactionRowProps) {
-  const amountLabel = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(transaction.amount)
+  const amountLabel = transaction.amountLabel ?? String(transaction.amount)
+  const dateLabel = transaction.dateLabel ?? transaction.date
 
   return (
     <div className="grid grid-cols-[405px_150px_136px] gap-4 p-6 h-20 justify-center items-center border-b border-gray-200">
@@ -32,7 +30,7 @@ export function TransactionRow({
           <span className="text-2xl text-gray-800 leading-tight md:text-base">
             {transaction.description}
           </span>
-          <span className="text-sm text-gray-600">{transaction.date}</span>
+          <span className="text-sm text-gray-600">{dateLabel}</span>
         </div>
       </div>
 

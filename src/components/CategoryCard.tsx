@@ -1,18 +1,10 @@
 import { ChevronRight } from 'lucide-react'
 import CustomLink from '@/components/ui/CustomLink'
 import { Tag } from '@/components/ui/Tag'
-import type { TagColor } from '@/types'
-
-export interface CategoryCardItem {
-  id: string
-  name: string
-  items: string
-  amount: string
-  categoryColor: TagColor
-}
+import type { CategoriesSummary } from '@/types'
 
 export interface CategoryCardProps {
-  categories: CategoryCardItem[]
+  categories: CategoriesSummary[]
 }
 
 export default function CategoryCard({ categories }: CategoryCardProps) {

@@ -1,9 +1,14 @@
 import { ArrowDownCircle, ArrowUpCircle, Wallet } from 'lucide-react'
-import CategoryCard, { type CategoryCardItem } from '@/components/CategoryCard'
+import { useEffect } from 'react'
+import CategoryCard from '@/components/CategoryCard'
 import TransactionsCard from '@/components/TransactionsCard'
 import { categoryStore } from '@/stores/categoryStore'
-import { transactionStore } from '@/stores/transactionStore'
-import type { Transaction } from '@/types'
+import {
+  formatTransaction,
+  useLoadTransactions,
+  useTransactions,
+} from '@/stores/transactionStore'
+import type { CategoriesSummary, Transaction } from '@/types'
 
 const summaryCards = [
   {
@@ -62,7 +67,7 @@ const mockCategories = [
     amount: 'R$ 245,80',
     categoryColor: 'yellow',
   },
-] satisfies CategoryCardItem[]
+] satisfies CategoriesSummary[]
 
 const mockTransactions = [
   {
@@ -153,39 +158,22 @@ const mockTransactions = [
 ] satisfies Transaction[]
 
 export default function Dashboard() {
-  const transactions = transactionStore(state => state.transactions)
-  const storeCategories = categoryStore(state => state.categories)
+  const transactions = useTransactions()
+  const loadTransactions = useLoadTransactions()
+
+  useEffect(() => {
+    loadTransactions()
+  }, [loadTransactions])
+
+  const categoriesSummary = categoryStore(state => state.categoriesSummary)
 
   const dashboardTransactions =
-    transactions.length > 0 ? transactions : mockTransactions
+    transactions.length > 0
+      ? transactions
+      : mockTransactions.map(formatTransaction)
 
-  const dashboardCategories: CategoryCardItem[] =
-    storeCategories.length > 0
-      ? storeCategories.map(category => {
-          const categoryTransactions = category.transactions ?? []
-          const expenseTransactions = categoryTransactions.filter(
-            transaction => transaction.type === 'expense'
-          )
-          const totalAmount = expenseTransactions.reduce(
-            (acc, transaction) => acc + transaction.amount,
-            0
-          )
-          const amountLabel = new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-          }).format(totalAmount)
-          const itemCount = categoryTransactions.length
-          const itemLabel = `${itemCount} ${itemCount === 1 ? 'item' : 'itens'}`
-
-          return {
-            id: category.id,
-            name: category.title,
-            items: itemLabel,
-            amount: amountLabel,
-            categoryColor: category.color,
-          }
-        })
-      : mockCategories
+  const dashboardCategories =
+    categoriesSummary.length > 0 ? categoriesSummary : mockCategories
 
   return (
     <section className="w-full max-w-310 flex flex-col gap-6">
