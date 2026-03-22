@@ -1,13 +1,6 @@
-import {
-  BriefcaseBusiness,
-  CircleDollarSign,
-  Fuel,
-  ShoppingCart,
-  UtensilsCrossed,
-} from 'lucide-react'
-import type * as React from 'react'
-import { tv } from 'tailwind-variants'
-import { cn } from '@/lib/utils'
+import dynamicIconImports from 'lucide-react/dynamicIconImports'
+import { lazy, Suspense, useMemo } from 'react'
+import { cn, tv } from 'tailwind-variants'
 import type { TagColor } from '@/types'
 
 const iconWrapperStyles = tv({
@@ -25,6 +18,7 @@ const iconWrapperStyles = tv({
     },
   },
   defaultVariants: {
+    name: 'circle-dollar-sign',
     color: 'gray',
   },
 })
@@ -48,33 +42,39 @@ const iconStyles = tv({
   },
 })
 
-const categoryIconMap = {
-  briefcase: BriefcaseBusiness,
-  utensils: UtensilsCrossed,
-  fuel: Fuel,
-  cart: ShoppingCart,
-  investment: CircleDollarSign,
-} as const
+export type IconName = keyof typeof dynamicIconImports
 
-type CategoryIconName = keyof typeof categoryIconMap
-
-export interface CategoryIconProps
-  extends React.HTMLAttributes<HTMLSpanElement> {
-  iconName?: string
+interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
+  name?: IconName
   color?: TagColor
 }
 
-export function CategoryIcon({
+const Icon = ({
   className,
-  iconName,
+  name = 'circle-dollar-sign',
   color = 'gray',
   ...props
-}: CategoryIconProps) {
-  const Icon = categoryIconMap[iconName as CategoryIconName] ?? CircleDollarSign
+}: IconProps) => {
+  const LucideIcon = useMemo(() => {
+    const importIcon = dynamicIconImports[name]
+
+    if (!importIcon) {
+      console.error(
+        `Ícone "${name}" não encontrado no lucide-react/dynamicIconImports`
+      )
+      return lazy(dynamicIconImports['circle-dollar-sign'])
+    }
+
+    return lazy(importIcon)
+  }, [name])
 
   return (
     <span className={cn(iconWrapperStyles({ color }), className)} {...props}>
-      <Icon className={iconStyles({ color })} />
+      <Suspense fallback={null}>
+        <LucideIcon className={cn(iconStyles({ color }))} />
+      </Suspense>
     </span>
   )
 }
+
+export default Icon

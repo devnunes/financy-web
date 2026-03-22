@@ -8,6 +8,11 @@ export const GET_TRANSACTIONS = gql`
       amount
       date
       type
+      category {
+        title
+        icon
+        color
+      }
     }
   }
 `

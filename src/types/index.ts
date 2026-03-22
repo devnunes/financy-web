@@ -1,3 +1,5 @@
+import type { IconName } from '@/components/ui/Icon'
+
 export interface User {
   id: string
   name: string
@@ -37,7 +39,7 @@ export interface Category {
   id: string
   title: string
   description: string
-  icon: string
+  icon: IconName
   color: TagColor
   userId: string
   createdAt?: string

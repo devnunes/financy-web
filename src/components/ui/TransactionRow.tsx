@@ -1,8 +1,8 @@
 import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
 import type * as React from 'react'
-import { CategoryIcon } from '@/components/ui/CategoryIcon'
 import { Tag } from '@/components/ui/Tag'
 import type { Transaction } from '@/types'
+import Icon from './Icon'
 
 export interface TransactionRowProps
   extends React.HTMLAttributes<HTMLSpanElement> {
@@ -16,14 +16,12 @@ export function TransactionRow({
 }: TransactionRowProps) {
   const amountLabel = transaction.amountLabel ?? String(transaction.amount)
   const dateLabel = transaction.dateLabel ?? transaction.date
-
   return (
     <div className="grid grid-cols-[405px_150px_136px] gap-4 p-6 h-20 justify-center items-center border-b border-gray-200">
       <div className="flex gap-5">
-        <CategoryIcon
-          iconName={transaction.category?.icon}
+        <Icon
+          name={transaction.category?.icon}
           color={transaction.category?.color}
-          aria-hidden
         />
 
         <div className="flex flex-col">
