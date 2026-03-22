@@ -17,7 +17,7 @@ export function TransactionRow({
   const amountLabel = transaction.amountLabel ?? String(transaction.amount)
   const dateLabel = transaction.dateLabel ?? transaction.date
   return (
-    <div className="grid grid-cols-[405px_150px_136px] gap-4 p-6 h-20 justify-center items-center border-b border-gray-200">
+    <div className="grid grid-cols-[1fr_150px_136px] xl:grid-cols-[405px_150px_136px] gap-4 p-6 h-20 justify-center items-center border-b border-gray-200">
       <div className="flex gap-5">
         <Icon
           name={transaction.category?.icon}

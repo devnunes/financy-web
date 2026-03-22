@@ -39,8 +39,8 @@ export default function Dashboard() {
   const dashboardCategories = categoriesSummary
 
   return (
-    <section className="w-full max-w-310 flex flex-col gap-6">
-      <div className="grid grid-cols-1 md:grid-cols-[379px_379px_379px] gap-5 w-full">
+    <section className="w-full max-w-296 flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
         {summaryCards.map(card => (
           <article
             key={card.id}
@@ -59,7 +59,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[780px_380px] gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-[781px_381px] gap-6">
         <TransactionsCard transactions={transactions} />
         <CategoryCard categories={dashboardCategories} />
       </div>
