@@ -1,19 +1,14 @@
 import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
-import type * as React from 'react'
+import type { HTMLAttributes } from 'react'
 import { Tag } from '@/components/ui/Tag'
 import type { Transaction } from '@/types'
 import Icon from './Icon'
 
-export interface TransactionRowProps
-  extends React.HTMLAttributes<HTMLSpanElement> {
+export interface TransactionRowProps extends HTMLAttributes<HTMLSpanElement> {
   transaction: Transaction
 }
 
-export function TransactionRow({
-  // className,
-  transaction,
-  // ...props
-}: TransactionRowProps) {
+export function TransactionRow({ transaction }: TransactionRowProps) {
   const amountLabel = transaction.amountLabel ?? String(transaction.amount)
   const dateLabel = transaction.dateLabel ?? transaction.date
   return (
