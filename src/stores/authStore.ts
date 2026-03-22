@@ -7,7 +7,7 @@ import { ME } from '@/lib/graphql/queries/Me'
 import type { SignInInput, SignUpInput, User } from '@/types'
 
 type SignUpMutationResponse = {
-  register: {
+  signUp: {
     token: string
     refreshToken: string
     user: User
@@ -101,8 +101,8 @@ export const useAuthStore = create<AuthState>()(
             },
           },
         })
-        if (!data?.register) throw new Error('SignUp failed')
-        const user = withInitials(data.register.user)
+        if (!data?.signUp) throw new Error('SignUp failed')
+        const user = withInitials(data.signUp.user)
 
         set(state => {
           state.user = user
