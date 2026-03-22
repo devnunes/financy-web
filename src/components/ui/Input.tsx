@@ -67,7 +67,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ) : null}
 
         <span className={cn(inputWrapper({ state }), className)}>
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-3 flex-1 h-full">
             {leftIcon ? (
               <span
                 className={cn('text-gray-400 transition-colors', {
@@ -80,7 +80,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ) : null}
             <input
               ref={ref}
-              className="focus:outline-none text-gray-800 placeholder:text-gray-400"
+              className="focus:outline-none text-gray-800 placeholder:text-gray-400 w-full h-full"
               disabled={isDisabled}
               readOnly={readOnly || isSelect}
               value={value}
