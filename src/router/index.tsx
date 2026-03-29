@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import SignIn from '@/pages/Auth/SignIn'
 import Categories from '@/pages/Categories'
 import Dashboard from '@/pages/Dashboard'
+import Profile from '@/pages/Profile'
 import Transactions from '@/pages/Transactions'
 import SignUp from '../pages/Auth/SignUp'
 import { useAuthStore } from '../stores/authStore'
@@ -32,6 +33,7 @@ export default function Router() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>
   )
