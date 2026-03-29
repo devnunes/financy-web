@@ -33,9 +33,12 @@ export default function Header() {
               </NavLink>
             </nav>
 
-            <div className="size-9 rounded-full bg-gray-300 text-gray-800 text-sm font-medium flex items-center justify-center">
+            <NavLink
+              to="/profile"
+              className="size-9 rounded-full bg-gray-300 text-gray-800 text-sm font-medium flex items-center justify-center"
+            >
               {userInitials}
-            </div>
+            </NavLink>
           </div>
         </header>
       )}

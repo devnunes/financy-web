@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient } from '@/lib/graphql/apollo'
-import { SIGN_IN } from '@/lib/graphql/mutations/SignIn'
-import { SIGN_UP } from '@/lib/graphql/mutations/SignUp'
-import { ME } from '@/lib/graphql/queries/Me'
+import { SIGN_IN } from '@/lib/graphql/mutations/signIn'
+import { SIGN_UP } from '@/lib/graphql/mutations/signUp'
+import { ME } from '@/lib/graphql/queries/me'
 import type { SignInInput, SignUpInput, User } from '@/types'
 
 type SignUpMutationResponse = {

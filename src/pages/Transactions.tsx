@@ -1,7 +1,8 @@
 import { Edit2, Plus, Search, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Input } from '@/components/Input'
+import { Field, FieldLabel } from '@/components/ui/field'
 import Icon from '@/components/ui/Icon'
-import { Input } from '@/components/ui/Input'
 import { Tag } from '@/components/ui/Tag'
 import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
 
@@ -52,14 +53,38 @@ export default function Transactions() {
         className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-gray-200 rounded-xl px-6 py-5 mb-2"
         aria-label="Filtros de transações"
       >
-        <Input
-          state={'default'}
-          label="Buscar"
-          type="text"
-          placeholder="Buscar por descrição"
-          leftIcon={<Search className="text-gray-400" size={16} />}
-          errorText={''}
-        />
+        {/* <Input
+            state={'default'}
+            label="Buscar"
+            type="text"
+            placeholder="Buscar por descrição"
+            leftIcon={<Search className="text-gray-400" size={16} />}
+            errorText={''}
+          /> */}
+        {/* <Field className="group flex w-full flex-col gap-2 items-center text-base h-12">
+          <FieldLabel>Buscar</FieldLabel>
+          <Search className="text-gray-400" size={16} />
+          <Input
+            className=""
+            id="search-transaction"
+            type="text"
+            placeholder="Buscar por descrição"
+          />
+        </Field> */}
+        <Field className="w-full">
+          <FieldLabel htmlFor="search-transaction">Buscar</FieldLabel>
+          <div className="relative w-full h-12">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <Search size={16} />
+            </span>
+            <Input
+              id="search-transaction"
+              type="text"
+              placeholder="Buscar por descrição"
+              className="pl-10 h-full"
+            />
+          </div>
+        </Field>
         <div className="flex flex-col">
           <span className="text-sm font-medium">Tipo</span>
           <select
