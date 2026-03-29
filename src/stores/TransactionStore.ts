@@ -1,13 +1,12 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient } from '@/lib/graphql/apollo'
-import { GET_TRANSACTIONS } from '@/lib/graphql/queries/GetTransactions'
+import { GET_TRANSACTIONS } from '@/lib/graphql/queries/getTransactions'
 import type { Transaction } from '@/types'
 
 interface TransactionState {
   transactions: Transaction[]
   loadTransactions: () => Promise<void>
-
   isLoading: boolean
   hasLoaded: boolean
   error: string | null
