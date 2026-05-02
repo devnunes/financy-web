@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import z from 'zod/v4'
 import Logo from '@/assets/images/Logo.svg'
-import { Input } from '@/components/ui/Input'
+import { Input } from '@/components/Input'
 import { LabelButton } from '@/components/ui/LabelButton'
 import { useAuthStore } from '@/stores/authStore'
 

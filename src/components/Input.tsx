@@ -1,9 +1,27 @@
 import * as React from 'react'
-import { Input as ShadcnInput } from '@/components/ui/input'
+import { tv, type VariantProps } from 'tailwind-variants'
+import { Input as ShadcnInput } from '@/components/ui/Input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
+const inputWrapper = tv({
+  base: '',
+  variants: {
+    state: {
+      default: 'border-gray-300',
+      filled: 'border-gray-400',
+      error: 'border-gray-300',
+      disabled: 'border-gray-200 bg-gray-100',
+      select: 'border-gray-300 cursor-pointer',
+    },
+  },
+  defaultVariants: {
+    state: 'default',
+  },
+})
+
 export interface InputProps extends React.ComponentProps<typeof ShadcnInput> {
+  state?: VariantProps<typeof inputWrapper>['state']
   label?: string
   helperText?: string
   errorText?: string
@@ -18,6 +36,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       label,
       helperText,
       errorText,
+      state,
       leftIcon,
       rightIcon,
       id,
@@ -28,13 +47,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="flex w-full flex-col gap-2">
         {label && (
-          <Label htmlFor={id} className={cn(errorText && 'text-destructive')}>
-            {label}
+          <Label htmlFor={id}>
+            <span className={cn(errorText && 'text-danger')}>{label}</span>
           </Label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <span
+              className={cn(
+                'absolute left-3 top-1/2 -translate-y-1/2 text-gray-400',
+                errorText && 'text-danger'
+              )}
+            >
               {leftIcon}
             </span>
           )}
@@ -42,10 +66,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={id}
             className={cn(
+              inputWrapper({ state }),
               leftIcon && 'pl-10',
               rightIcon && 'pr-10',
-              errorText &&
-                'border-destructive focus-visible:ring-destructive/50',
               className
             )}
             aria-invalid={!!errorText}

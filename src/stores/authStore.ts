@@ -25,7 +25,7 @@ type SignInMutationResponse = {
 }
 
 type SignOutMutationResponse = {
-  signout: boolean
+  signOut: boolean
 }
 
 interface AuthState {
@@ -44,6 +44,22 @@ type MeQueryResponse = {
 }
 
 enableMapSet()
+
+function getInitials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .map(namePart => namePart[0])
+    .join('')
+    .toUpperCase()
+}
+
+function withInitials(user: User): User {
+  return {
+    ...user,
+    initials: getInitials(user.name),
+  }
+}
 
 export const useAuthStore = create<AuthState>()(
   immer((set, _get) => {
@@ -75,9 +91,10 @@ export const useAuthStore = create<AuthState>()(
         if (!data?.me) {
           throw new Error('Session not found')
         }
+        const user = withInitials(data.me)
 
         set(state => {
-          state.user = data.me
+          state.user = user
           state.isAuthenticated = true
         })
       } catch {
@@ -109,8 +126,9 @@ export const useAuthStore = create<AuthState>()(
         })
         if (!data?.signUp) throw new Error('SignUp failed')
         const { user } = data.signUp
+        const userWithInitials = withInitials(user)
         set(state => {
-          state.user = user
+          state.user = userWithInitials
           state.isAuthenticated = true
           state.isCheckingSession = false
         })

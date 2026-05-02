@@ -51,7 +51,6 @@ export default function Profile() {
             label="E-mail"
             value={user.email}
             leftIcon={<Icon name="mail" color="gray" className="size-4" />}
-            state="disabled"
             readOnly
             disabled
             helperText="O e-mail não pode ser alterado"
