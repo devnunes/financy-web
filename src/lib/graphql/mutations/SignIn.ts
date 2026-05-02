@@ -9,8 +9,6 @@ export const SIGN_IN = gql`
         id
         name
         email
-        createdAt
-        updatedAt
       }
     }
   }

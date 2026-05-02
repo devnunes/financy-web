@@ -1,9 +1,11 @@
+import { enableMapSet } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient } from '@/lib/graphql/apollo'
-import { SIGN_IN } from '@/lib/graphql/mutations/SignIn'
-import { SIGN_UP } from '@/lib/graphql/mutations/SignUp'
-import { ME } from '@/lib/graphql/queries/Me'
+import { SIGN_IN } from '@/lib/graphql/mutations/signIn'
+import { SIGN_OUT } from '@/lib/graphql/mutations/signOut'
+import { SIGN_UP } from '@/lib/graphql/mutations/signUp'
+import { ME } from '@/lib/graphql/queries/me'
 import type { SignInInput, SignUpInput, User } from '@/types'
 
 type SignUpMutationResponse = {
@@ -22,6 +24,10 @@ type SignInMutationResponse = {
   }
 }
 
+type SignOutMutationResponse = {
+  signout: boolean
+}
+
 interface AuthState {
   user: User | null
   isAuthenticated: boolean
@@ -30,30 +36,31 @@ interface AuthState {
   signUp: (data: SignUpInput) => Promise<void>
   signIn: (data: SignInInput) => Promise<void>
   signOut: () => Promise<void>
+  handleUnauthorized: () => Promise<void>
 }
 
 type MeQueryResponse = {
   me: User
 }
 
-function getInitials(name: string) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .map(namePart => namePart[0])
-    .join('')
-    .toUpperCase()
-}
-
-function withInitials(user: User): User {
-  return {
-    ...user,
-    initials: getInitials(user.name),
-  }
-}
+enableMapSet()
 
 export const useAuthStore = create<AuthState>()(
   immer((set, _get) => {
+    async function handleUnauthorized() {
+      set(state => {
+        state.user = null
+        state.isAuthenticated = false
+        state.isCheckingSession = false
+      })
+
+      try {
+        await apolloClient.clearStore()
+      } catch {
+        // Keep local auth state cleared even if cache reset fails.
+      }
+    }
+
     async function syncSession() {
       set(state => {
         state.isCheckingSession = true
@@ -68,10 +75,9 @@ export const useAuthStore = create<AuthState>()(
         if (!data?.me) {
           throw new Error('Session not found')
         }
-        const user = withInitials(data.me)
 
         set(state => {
-          state.user = user
+          state.user = data.me
           state.isAuthenticated = true
         })
       } catch {
@@ -102,8 +108,7 @@ export const useAuthStore = create<AuthState>()(
           },
         })
         if (!data?.signUp) throw new Error('SignUp failed')
-        const user = withInitials(data.signUp.user)
-
+        const { user } = data.signUp
         set(state => {
           state.user = user
           state.isAuthenticated = true
@@ -132,8 +137,7 @@ export const useAuthStore = create<AuthState>()(
           },
         })
         if (!data?.signIn) throw new Error('SignIn failed')
-        const user = withInitials(data.signIn.user)
-
+        const { user } = data.signIn
         set(state => {
           state.user = user
           state.isAuthenticated = true
@@ -141,24 +145,22 @@ export const useAuthStore = create<AuthState>()(
         })
       } catch (error) {
         throw new Error(
-          'SignIn failed: ' +
+          'Login failed: ' +
             (error instanceof Error ? error.message : String(error))
         )
       }
     }
 
     async function signOut() {
-      set(state => {
-        state.user = null
-        state.isAuthenticated = false
-        state.isCheckingSession = false
-      })
-
       try {
-        await apolloClient.clearStore()
+        await apolloClient.mutate<SignOutMutationResponse>({
+          mutation: SIGN_OUT,
+        })
       } catch {
-        // Keep the user signed out locally even if cache clearing fails.
+        // Ensure local logout even if API call fails.
       }
+
+      await handleUnauthorized()
     }
 
     return {
@@ -169,6 +171,7 @@ export const useAuthStore = create<AuthState>()(
       signUp,
       signIn,
       signOut,
+      handleUnauthorized,
     }
   })
 )
