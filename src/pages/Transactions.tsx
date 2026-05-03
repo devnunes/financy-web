@@ -5,6 +5,7 @@ import { Field, FieldLabel } from '@/components/ui/field'
 import Icon from '@/components/ui/Icon'
 import { Tag } from '@/components/ui/Tag'
 import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
+import { TransactionDialog } from './Transactions/TrasactionDialog'
 
 export default function Transactions() {
   const transactions = useTransactions()
@@ -14,6 +15,8 @@ export default function Transactions() {
   const [page, setPage] = useState(1)
   const resultsPerPage = 10
   const totalResults = 27
+  const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
+    useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -44,6 +47,7 @@ export default function Transactions() {
           className="ml-auto bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary-light"
           type="button"
           aria-label="Nova transação"
+          onClick={() => setToggleNewTransactionDialog(true)}
         >
           <Plus size={16} /> Nova transação
         </button>
@@ -247,6 +251,10 @@ export default function Transactions() {
           </nav>
         </footer>
       </div>
+      <TransactionDialog
+        open={toggleNewTransactionDialog}
+        onOpenChange={setToggleNewTransactionDialog}
+      />
     </section>
   )
 }
