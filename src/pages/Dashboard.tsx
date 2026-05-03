@@ -37,7 +37,7 @@ export default function Dashboard() {
               Saldo total
             </span>
           </div>
-          <strong className="text-[28px]/32 font-bold text-gray-800 leading-tight line">
+          <strong className="text-28xl/32 font-bold text-gray-800 leading-tight line">
             {transactionsSummary?.balanceLabel ?? 0}
           </strong>
         </article>
@@ -51,7 +51,7 @@ export default function Dashboard() {
               Receitas do mês
             </span>
           </div>
-          <strong className="text-[28px]/32 font-bold text-gray-800 leading-tight line">
+          <strong className="text-28xl/32 font-bold text-gray-800 leading-tight line">
             {transactionsSummary?.incomeLabel ?? 0}
           </strong>
         </article>
@@ -65,7 +65,7 @@ export default function Dashboard() {
               Despesas do mês
             </span>
           </div>
-          <strong className="text-[28px]/32 font-bold text-gray-800 leading-tight line">
+          <strong className="text-28xl/32 font-bold text-gray-800 leading-tight line">
             {transactionsSummary?.expenseLabel ?? 0}
           </strong>
         </article>

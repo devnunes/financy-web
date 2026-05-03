@@ -4,22 +4,21 @@ import { cn, tv } from 'tailwind-variants'
 import type { TagColor } from '@/types'
 
 const iconWrapperStyles = tv({
-  base: 'inline-flex bg-transparent items-center justify-center rounded-lg',
+  base: 'inline-flex bg-transparent items-start rounded-lg',
   variants: {
     bgColor: {
       transparent: 'bg-transparent',
-      gray: 'bg-gray-100 size-10',
-      blue: 'bg-blue-light size-10',
-      purple: 'bg-purple-light size-10',
-      pink: 'bg-pink-light size-10',
-      red: 'bg-red-light size-10',
-      orange: 'bg-orange-light size-10',
-      yellow: 'bg-yellow-light size-10',
-      green: 'bg-green-light size-10',
+      gray: 'bg-gray-100 size-10 items-center justify-center',
+      blue: 'bg-blue-light size-10 items-center justify-center',
+      purple: 'bg-purple-light size-10 items-center justify-center',
+      pink: 'bg-pink-light size-10 items-center justify-center',
+      red: 'bg-red-light size-10 items-center justify-center',
+      orange: 'bg-orange-light size-10 items-center justify-center',
+      yellow: 'bg-yellow-light size-10 items-center justify-center',
+      green: 'bg-green-light size-10 items-center justify-center',
     },
   },
   defaultVariants: {
-    name: 'circle-dollar-sign',
     bgColor: 'transparent',
   },
 })

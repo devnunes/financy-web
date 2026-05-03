@@ -52,6 +52,8 @@
   --color-yellow-dark: #a16207;
   --color-yellow-base: #ca8a04;
   --color-yellow-light: #f7f3ca;
+  
+  --text-28xl: 1.75rem;
 }
 
 :root {
