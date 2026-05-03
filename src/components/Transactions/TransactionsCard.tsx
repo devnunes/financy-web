@@ -1,7 +1,7 @@
 import { ChevronRight, Plus } from 'lucide-react'
 import { useState } from 'react'
 import CustomLink from '@/components/CustomLink'
-import { TransactionDialog } from '@/components/Transactions/TrasactionDialog'
+import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
 import { Button } from '@/components/ui/button'
 import type { Transaction } from '@/types'
 import { TransactionRow } from './TransactionRow'
