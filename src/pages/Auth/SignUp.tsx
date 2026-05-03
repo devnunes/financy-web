@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import z from 'zod/v4'
 import Logo from '@/assets/images/Logo.svg'
 import { FormInput } from '@/components/FormInput'
-import { LabelButton } from '@/components/ui/LabelButton'
+import { LabelButton } from '@/components/LabelButton'
 import { useAuthStore } from '@/stores/authStore'
 
 const signUpSchema = z.object({

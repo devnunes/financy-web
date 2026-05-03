@@ -2,9 +2,9 @@ import { ChevronRight, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { TransactionDialog } from '@/pages/Transactions/TrasactionDialog'
 import type { Transaction } from '@/types'
+import CustomLink from './CustomLink'
+import { TransactionRow } from './TransactionRow'
 import { Button } from './ui/button'
-import CustomLink from './ui/CustomLink'
-import { TransactionRow } from './ui/TransactionRow'
 
 export interface TransactionsCardProps {
   transactions: Transaction[]

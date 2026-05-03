@@ -1,4 +1,4 @@
-import type { IconName } from '@/components/ui/Icon'
+import type { IconName } from '@/components/Icon'
 
 export interface User {
   id: string

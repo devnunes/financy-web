@@ -1,6 +1,6 @@
 import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
-import { Tag } from '@/components/ui/Tag'
+import { Tag } from '@/components/Tag'
 import type { Transaction } from '@/types'
 import Icon from './Icon'
 

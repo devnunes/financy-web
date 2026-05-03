@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FormInput } from '@/components/FormInput'
-import Icon from '@/components/ui/Icon'
-import { LabelButton } from '@/components/ui/LabelButton'
+import Icon from '@/components/Icon'
+import { LabelButton } from '@/components/LabelButton'
 import { useAuthStore } from '@/stores/authStore'
 
 export default function Profile() {

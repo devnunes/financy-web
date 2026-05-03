@@ -5,9 +5,9 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { z } from 'zod/v4'
 import Logo from '@/assets/images/Logo.svg'
+import CustomLink from '@/components/CustomLink'
 import { FormInput } from '@/components/FormInput'
-import CustomLink from '@/components/ui/CustomLink'
-import { LabelButton } from '@/components/ui/LabelButton'
+import { LabelButton } from '@/components/LabelButton'
 import { useAuthStore } from '@/stores/authStore'
 
 const signInSchema = z.object({

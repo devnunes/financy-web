@@ -1,6 +1,5 @@
 import type * as React from 'react'
 import { tv } from 'tailwind-variants'
-
 import { cn } from '@/lib/utils'
 
 type LabelButtonState = 'default' | 'disabled'

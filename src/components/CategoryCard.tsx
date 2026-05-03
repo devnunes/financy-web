@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react'
-import CustomLink from '@/components/ui/CustomLink'
-import { Tag } from '@/components/ui/Tag'
+import CustomLink from '@/components/CustomLink'
+import { Tag } from '@/components/Tag'
 import type { CategoriesSummary } from '@/types'
 
 export interface CategoryCardProps {
