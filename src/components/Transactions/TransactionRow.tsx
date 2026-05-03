@@ -1,8 +1,8 @@
 import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
+import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
 import type { Transaction } from '@/types'
-import Icon from './Icon'
 
 export interface TransactionRowProps extends HTMLAttributes<HTMLSpanElement> {
   transaction: Transaction

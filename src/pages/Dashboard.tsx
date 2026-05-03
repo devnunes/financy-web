@@ -1,7 +1,7 @@
 import { ArrowDownCircle, ArrowUpCircle, Wallet } from 'lucide-react'
 import { useEffect } from 'react'
 import CategoryCard from '@/components/CategoryCard'
-import TransactionsCard from '@/components/TransactionsCard'
+import TransactionsCard from '@/components/Transactions/TransactionsCard'
 import { categoryStore } from '@/stores/categoryStore'
 import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
 import {

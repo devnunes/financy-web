@@ -4,8 +4,8 @@ import { FormInput } from '@/components/FormInput'
 import { FormSelect } from '@/components/FormSelect'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
+import { TransactionDialog } from '@/components/Transactions/TrasactionDialog'
 import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
-import { TransactionDialog } from './Transactions/TrasactionDialog'
 
 export default function Transactions() {
   const transactions = useTransactions()
