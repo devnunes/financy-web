@@ -1,8 +1,8 @@
 import type * as React from 'react'
 import { type FieldValues, type Path, useFormContext } from 'react-hook-form'
 import { tv, type VariantProps } from 'tailwind-variants'
+import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 const inputWrapper = tv({
@@ -86,15 +86,14 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
   const inputId = id ?? name
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <Field className="w-full flex-col gap-2">
       {label && (
-        <Label htmlFor={inputId}>
-          <span
-            className={cn('text-gray-700', effectiveErrorText && 'text-danger')}
-          >
-            {label}
-          </span>
-        </Label>
+        <FieldLabel
+          htmlFor={inputId}
+          className={cn('text-gray-700', effectiveErrorText && 'text-danger')}
+        >
+          {label}
+        </FieldLabel>
       )}
       <div className="relative flex items-center">
         {leftIcon && (
@@ -120,16 +119,21 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
           {...props}
         />
         {rightIcon && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <span
+            className={cn(
+              'absolute right-3 top-1/2 -translate-y-1/2 text-gray-400',
+              effectiveErrorText && 'text-danger'
+            )}
+          >
             {rightIcon}
           </span>
         )}
       </div>
       {effectiveErrorText ? (
-        <span className="text-xs text-destructive">{effectiveErrorText}</span>
+        <FieldError>{effectiveErrorText}</FieldError>
       ) : helperText ? (
         <span className="text-xs text-muted-foreground">{helperText}</span>
       ) : null}
-    </div>
+    </Field>
   )
 }

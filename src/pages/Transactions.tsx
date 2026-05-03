@@ -1,7 +1,7 @@
 import { Edit2, Plus, Search, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormInput } from '@/components/FormInput'
-import { Field, FieldLabel } from '@/components/ui/field'
+import { FormSelect } from '@/components/FormSelect'
 import Icon from '@/components/ui/Icon'
 import { Tag } from '@/components/ui/Tag'
 import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
@@ -57,69 +57,15 @@ export default function Transactions() {
         className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-gray-200 rounded-xl px-6 py-5 mb-2"
         aria-label="Filtros de transações"
       >
-        {/* <Input
-            state={'default'}
-            label="Buscar"
-            type="text"
-            placeholder="Buscar por descrição"
-            leftIcon={<Search className="text-gray-400" size={16} />}
-            errorText={''}
-          /> */}
-        {/* <Field className="group flex w-full flex-col gap-2 items-center text-base h-12">
-          <FieldLabel>Buscar</FieldLabel>
-          <Search className="text-gray-400" size={16} />
-          <Input
-            className=""
-            id="search-transaction"
-            type="text"
-            placeholder="Buscar por descrição"
-          />
-        </Field> */}
-        <Field className="w-full">
-          <FieldLabel htmlFor="search-transaction">Buscar</FieldLabel>
-          <div className="relative w-full h-12">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <Search size={16} />
-            </span>
-            <FormInput
-              id="search-transaction"
-              type="text"
-              placeholder="Buscar por descrição"
-              className="pl-10 h-full"
-            />
-          </div>
-        </Field>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">Tipo</span>
-          <select
-            className="h-12 rounded-lg border border-gray-300 bg-white px-3 text-base text-gray-800 focus:outline-none"
-            aria-label="Tipo"
-          >
-            <option value="">Todos</option>
-            <option value="income">Entrada</option>
-            <option value="expense">Saída</option>
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">Categoria</span>
-          <select
-            className="h-12 rounded-lg border border-gray-300 bg-white px-3 text-base text-gray-800 focus:outline-none"
-            aria-label="Categoria"
-          >
-            <option value="">Todas</option>
-            {/* TODO: Map categories here */}
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">Período</span>
-          <select
-            className="h-12 rounded-lg border border-gray-300 bg-white px-3 text-base text-gray-800 focus:outline-none"
-            aria-label="Período"
-          >
-            <option value="">Novembro / 2025</option>
-            {/* TODO: Map periods here */}
-          </select>
-        </div>
+        <FormInput
+          name="Buscar"
+          label="Buscar"
+          placeholder="Buscar por descrição"
+          leftIcon={<Search className="text-gray-400" size={16} />}
+        />
+        <FormSelect name="Tipo" label="Tipo" placeholder="Todos" />
+        <FormSelect name="Categoria" label="Categoria" placeholder="Todas" />
+        <FormSelect name="Periodo" label="Período" placeholder="Todos" />
       </form>
 
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">

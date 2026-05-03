@@ -106,8 +106,14 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
   }
 
   return (
-    <Field className="w-full gap-2">
-      {label ? <FieldLabel>{label}</FieldLabel> : null}
+    <Field className="w-full flex-col gap-2">
+      {label ? (
+        <FieldLabel
+          className={cn('text-gray-700', effectiveErrorText && 'text-danger')}
+        >
+          {label}
+        </FieldLabel>
+      ) : null}
       <Select
         {...props}
         value={resolvedValue}
