@@ -1,6 +1,6 @@
-import { ArrowDownCircle, ArrowUpCircle, Wallet } from 'lucide-react'
 import { useEffect } from 'react'
 import CategoryCard from '@/components/CategoryCard'
+import Icon from '@/components/Icon'
 import TransactionsCard from '@/components/transactions/TransactionsCard'
 import { categoryStore } from '@/stores/categoryStore'
 import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
@@ -32,7 +32,7 @@ export default function Dashboard() {
           className="rounded-xl border border-gray-200 bg-white px-5 py-6 flex flex-col gap-3"
         >
           <div className="flex items-center gap-3">
-            <Wallet size={14} className="text-purple-base" />
+            <Icon name="wallet" color="purple" className="size-5" />
             <span className="uppercase text-xs tracking-wide text-gray-500">
               Saldo total
             </span>
@@ -46,7 +46,7 @@ export default function Dashboard() {
           className="rounded-xl border border-gray-200 bg-white px-5 py-6 flex flex-col gap-3"
         >
           <div className="flex items-center gap-3">
-            <ArrowUpCircle size={14} className="text-green-dark" />
+            <Icon name="arrow-up-circle" color="green" className="size-5" />
             <span className="uppercase text-xs tracking-wide text-gray-500">
               Receitas do mês
             </span>
@@ -60,7 +60,7 @@ export default function Dashboard() {
           className="rounded-xl border border-gray-200 bg-white px-5 py-6 flex flex-col gap-3"
         >
           <div className="flex items-center gap-3">
-            <ArrowDownCircle size={14} className="text-red-base" />
+            <Icon name="arrow-down-circle" color="red" className="size-5" />
             <span className="uppercase text-xs tracking-wide text-gray-500">
               Despesas do mês
             </span>

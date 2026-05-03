@@ -4,22 +4,23 @@ import { cn, tv } from 'tailwind-variants'
 import type { TagColor } from '@/types'
 
 const iconWrapperStyles = tv({
-  base: 'inline-flex size-10 items-center justify-center rounded-lg',
+  base: 'inline-flex bg-transparent items-center justify-center rounded-lg',
   variants: {
-    color: {
-      gray: 'bg-gray-100',
-      blue: 'bg-blue-light',
-      purple: 'bg-purple-light',
-      pink: 'bg-pink-light',
-      red: 'bg-red-light',
-      orange: 'bg-orange-light',
-      yellow: 'bg-yellow-light',
-      green: 'bg-green-light',
+    bgColor: {
+      transparent: 'bg-transparent',
+      gray: 'bg-gray-100 size-10',
+      blue: 'bg-blue-light size-10',
+      purple: 'bg-purple-light size-10',
+      pink: 'bg-pink-light size-10',
+      red: 'bg-red-light size-10',
+      orange: 'bg-orange-light size-10',
+      yellow: 'bg-yellow-light size-10',
+      green: 'bg-green-light size-10',
     },
   },
   defaultVariants: {
     name: 'circle-dollar-sign',
-    color: 'gray',
+    bgColor: 'transparent',
   },
 })
 
@@ -27,6 +28,7 @@ const iconStyles = tv({
   base: 'size-4',
   variants: {
     color: {
+      transparent: 'text-transparent',
       gray: 'text-gray-700',
       blue: 'text-blue-dark',
       purple: 'text-purple-dark',
@@ -47,12 +49,14 @@ export type IconName = keyof typeof dynamicIconImports
 interface IconProps extends React.HTMLAttributes<HTMLSpanElement> {
   name?: IconName
   color?: TagColor
+  bgColor?: TagColor
 }
 
 const Icon = ({
   className,
   name = 'circle-dollar-sign',
   color = 'gray',
+  bgColor = 'transparent',
   ...props
 }: IconProps) => {
   const LucideIcon = useMemo(() => {
@@ -69,9 +73,9 @@ const Icon = ({
   }, [name])
 
   return (
-    <span className={cn(iconWrapperStyles({ color }), className)} {...props}>
+    <span className={cn(iconWrapperStyles({ bgColor }))} {...props}>
       <Suspense fallback={null}>
-        <LucideIcon className={cn(iconStyles({ color }))} />
+        <LucideIcon className={cn(iconStyles({ color }), className)} />
       </Suspense>
     </span>
   )

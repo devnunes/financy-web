@@ -26,6 +26,7 @@ export interface Transaction {
 }
 
 export type TagColor =
+  | 'transparent'
   | 'gray'
   | 'blue'
   | 'purple'

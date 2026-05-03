@@ -121,6 +121,7 @@ export default function Transactions() {
                         <Icon
                           name={transaction.category?.icon}
                           color={transaction.category?.color}
+                          bgColor={transaction.category?.color}
                         />
                         <span className="text-base text-gray-800">
                           {transaction.description}

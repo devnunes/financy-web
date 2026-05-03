@@ -1,4 +1,3 @@
-import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
@@ -17,6 +16,7 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
         <Icon
           name={transaction.category?.icon}
           color={transaction.category?.color}
+          bgColor={transaction.category?.color}
         />
 
         <div className="flex flex-col">
@@ -40,9 +40,9 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
             : `- ${amountLabel}`}
         </strong>
         {transaction.type === 'income' ? (
-          <ArrowUpCircle size={14} className="text-green-dark" />
+          <Icon name="arrow-up-circle" color="green" className="size-3.5" />
         ) : (
-          <ArrowDownCircle size={14} className="text-red-base" />
+          <Icon name="arrow-down-circle" color="red" className="size-3.5" />
         )}
       </div>
     </div>
