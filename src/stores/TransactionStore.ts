@@ -40,10 +40,7 @@ export function formatTransaction(transaction: Transaction): Transaction {
   }
 }
 
-const useTransactionStore = create<
-  TransactionState,
-  [['zustand/immer', never]]
->(
+const useTransactionStore = create<TransactionState>()(
   immer((set, get) => {
     async function loadTransactions() {
       const { isLoading, hasLoaded } = get()
@@ -100,6 +97,9 @@ export const useTransaction = (id: string) =>
   useTransactionStore(state =>
     state.transactions.find(transaction => transaction.id === id)
   )
+
+export const useTransactionsIsLoading = () =>
+  useTransactionStore(state => state.isLoading)
 
 export const useLoadTransactions = () =>
   useTransactionStore(state => state.loadTransactions)

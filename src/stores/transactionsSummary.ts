@@ -36,10 +36,7 @@ export function formatTransactionSummary(
   }
 }
 
-const useTransactionSummaryStore = create<
-  TransactionSummaryState,
-  [['zustand/immer', never]]
->(
+const useTransactionSummaryStore = create<TransactionSummaryState>()(
   immer((set, get) => {
     async function getTransactionsSummary() {
       const { isLoading, hasLoaded } = get()

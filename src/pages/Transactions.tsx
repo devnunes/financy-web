@@ -5,12 +5,16 @@ import { FormSelect } from '@/components/FormSelect'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
 import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
-import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
+import {
+  useLoadTransactions,
+  useTransactions,
+  useTransactionsIsLoading,
+} from '@/stores/transactionStore'
 
 export default function Transactions() {
+  const loading = useTransactionsIsLoading()
   const transactions = useTransactions()
   const loadTransactions = useLoadTransactions()
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const resultsPerPage = 10
@@ -19,11 +23,10 @@ export default function Transactions() {
     useState(false)
 
   useEffect(() => {
-    setLoading(true)
     setError(null)
-    loadTransactions()
-      .catch(err => setError(err?.message || 'Erro ao carregar transações'))
-      .finally(() => setLoading(false))
+    loadTransactions().catch(err =>
+      setError(err?.message || 'Erro ao carregar transações')
+    )
   }, [loadTransactions])
 
   return (
