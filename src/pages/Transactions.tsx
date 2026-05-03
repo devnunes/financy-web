@@ -1,6 +1,6 @@
 import { Edit2, Plus, Search, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Input } from '@/components/Input'
+import { FormInput } from '@/components/FormInput'
 import { Field, FieldLabel } from '@/components/ui/field'
 import Icon from '@/components/ui/Icon'
 import { Tag } from '@/components/ui/Tag'
@@ -77,7 +77,7 @@ export default function Transactions() {
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
               <Search size={16} />
             </span>
-            <Input
+            <FormInput
               id="search-transaction"
               type="text"
               placeholder="Buscar por descrição"

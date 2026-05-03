@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Input } from '@/components/Input'
+import { FormInput } from '@/components/FormInput'
 import Icon from '@/components/ui/Icon'
 import { LabelButton } from '@/components/ui/LabelButton'
 import { useAuthStore } from '@/stores/authStore'
@@ -39,7 +39,7 @@ export default function Profile() {
         <p className="text-gray-500 text-base text-center mb-6">{user.email}</p>
         <hr className="w-full border-gray-200 my-6" />
         <form className="w-full flex flex-col gap-4">
-          <Input
+          <FormInput
             label="Nome completo"
             value={name}
             onChange={e => setName(e.target.value)}
@@ -47,7 +47,7 @@ export default function Profile() {
             placeholder="Nome completo"
             autoComplete="name"
           />
-          <Input
+          <FormInput
             label="E-mail"
             value={user.email}
             leftIcon={<Icon name="mail" color="gray" className="size-4" />}
