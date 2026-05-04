@@ -8,7 +8,7 @@ const iconWrapperStyles = tv({
   variants: {
     bgColor: {
       transparent: 'bg-transparent',
-      gray: 'bg-gray-100 size-10 items-center justify-center',
+      gray: 'bg-gray-100 ring-1 ring-gray-300 size-8 items-center justify-center',
       blue: 'bg-blue-light size-10 items-center justify-center',
       purple: 'bg-purple-light size-10 items-center justify-center',
       pink: 'bg-pink-light size-10 items-center justify-center',

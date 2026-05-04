@@ -1,10 +1,21 @@
 import { ChevronRight } from 'lucide-react'
 import CustomLink from '@/components/CustomLink'
 import { Tag } from '@/components/Tag'
+import { currencyFormatter } from '@/lib/utils'
 import type { CategoriesSummary } from '@/types'
 
 export interface CategoryCardProps {
   categories: CategoriesSummary[]
+}
+
+function handleCountText(count: number): string {
+  if (count === 0) {
+    return '0 itens'
+  }
+  if (count === 1) {
+    return '1 item'
+  }
+  return `${count} itens`
 }
 
 export default function CategoryCard({ categories }: CategoryCardProps) {
@@ -18,6 +29,7 @@ export default function CategoryCard({ categories }: CategoryCardProps) {
           to="/categories"
           text="Gerenciar"
           icon={<ChevronRight size={16} />}
+          className="text-sm"
         />
       </header>
 
@@ -25,16 +37,16 @@ export default function CategoryCard({ categories }: CategoryCardProps) {
         {categories.map(category => (
           <div
             key={category.id}
-            className="grid grid-cols-[125px_95px_80px] items-center justify-center gap-4"
+            className="w-full grid grid-cols-[1fr_auto_auto] items-start justify-center gap-4"
           >
             <div>
-              <Tag text={category.name} color={category.categoryColor} />
+              <Tag text={category.title} color={category.color} />
             </div>
             <span className="text-sm text-gray-600 text-right">
-              {category.items}
+              {handleCountText(category.transactionCount)}
             </span>
-            <span className="text-sm font-semibold text-gray-800 ">
-              {category.amount}
+            <span className="text-sm font-semibold text-gray-800">
+              {currencyFormatter.format(category.totalAmount / 100)}
             </span>
           </div>
         ))}

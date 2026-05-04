@@ -16,7 +16,7 @@ export default function TransactionsCard({
   const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
     useState(false)
   return (
-    <article className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+    <article className="xl:col-span-2 rounded-xl border border-gray-200 bg-white overflow-hidden">
       <header className="h-15 px-6 py-5 border-b border-gray-200 flex items-center justify-between">
         <span className="uppercase text-xs/4 tracking-wide text-gray-500">
           Transações recentes
@@ -25,6 +25,7 @@ export default function TransactionsCard({
           to="/transactions"
           text="Ver todas"
           icon={<ChevronRight size={20} />}
+          className="text-sm"
         />
       </header>
 

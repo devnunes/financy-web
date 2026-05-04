@@ -51,10 +51,10 @@ export interface Category {
 
 export interface CategoriesSummary {
   id: string
-  name: string
-  items: string
-  amount: string
-  categoryColor: TagColor
+  title: string
+  totalAmount: number
+  transactionCount: number
+  color: TagColor
 }
 
 export interface SignUpInput {
