@@ -1,71 +1,84 @@
 # Financy Web
 
-Aplicação frontend do Financy, desenvolvida como parte do **trabalho final de pós-graduação na Faculdade de Tecnologia Rocketseat**.
+Frontend application for the Financy project, built as part of a final postgraduate project at Rocketseat Faculty of Technology.
 
-## Objetivo
+## Goal
 
-Entregar a interface web para autenticação e gerenciamento financeiro dos usuários, consumindo a API GraphQL do projeto.
+Deliver the web interface for user authentication and financial management, consuming the Financy GraphQL API.
 
 ## Stack
 
 - React 19
 - TypeScript
 - Vite
-- Apollo Client (GraphQL)
+- Apollo Client
 - React Hook Form + Zod
-- Zustand (estado global de autenticação)
+- Zustand
 - Tailwind CSS
 - Biome
 
-## Funcionalidades atuais
+## Prerequisites
 
-### Autenticação
+- Node.js 20+
+- pnpm
+- Financy backend running locally
 
-- Tela de login
-- Tela de cadastro
-- Validação de formulário com Zod
-- Sincronização de sessão com `me`
-- Controle de acesso com rotas protegidas e rotas públicas
+## Backend Integration
 
-### Navegação autenticada
+Apollo Client behavior:
 
-- `/dashboard`
-- `/transactions`
-- `/categories`
+- Uses `VITE_GRAPHQL_URL` when provided
+- Falls back to `/graphql` when `VITE_GRAPHQL_URL` is not set
+- Sends cookies with `credentials: include`
 
-> As páginas de dashboard, transações e categorias já existem, porém ainda estão em estágio inicial de interface e integração completa de CRUD.
+Development proxy behavior:
 
-## Estrutura resumida
+- Vite proxies `/graphql` to `http://localhost:3333`
+- This allows local frontend calls without hardcoding an absolute API URL
 
-- `src/pages/Auth`: páginas de autenticação e área privada
-- `src/router`: definição e proteção de rotas
-- `src/lib/graphql`: client Apollo, queries e mutations
-- `src/stores`: estado global (auth)
-- `src/components`: layout e componentes reutilizáveis
+## Run Locally
 
-## Integração com backend
+1. Start backend in a separate terminal:
 
-O Apollo Client está configurado para:
+```bash
+cd ../financy-server
+pnpm install
+# Configure .env.dev first (see financy-server README)
+pnpm dev
+```
 
-- URL GraphQL: `http://localhost:3333/graphql`
-- `credentials: include` para sessão por cookie
-
-## Como rodar
+2. Start frontend:
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Aplicação disponível em `http://localhost:5173`.
+Frontend URL: `http://localhost:5173`
 
-## Scripts úteis
+## Current Feature Status
+
+- Authentication (sign in, sign up, session sync with `me`): available
+- Public and protected routing: available
+- Authenticated routes: `/dashboard`, `/transactions`, `/categories`, `/profile`
+- Dashboard, transactions, and categories pages: available and under active UI iteration
+
+## Project Structure
+
+- `src/pages`: application pages
+- `src/router`: routing and route guards
+- `src/lib/graphql`: Apollo client, queries, and mutations
+- `src/stores`: global state stores
+- `src/components`: reusable UI components
+
+## Scripts
 
 ```bash
-pnpm dev
-pnpm build
-pnpm preview
-pnpm format
-pnpm lint
-pnpm check:biome
+pnpm dev          # start Vite development server
+pnpm build        # run TypeScript build and create production bundle
+pnpm preview      # preview production bundle locally
+pnpm format       # format code with Biome
+pnpm lint         # run biome check
+pnpm lint:biome   # run biome lint
+pnpm check:biome  # run biome check
 ```
