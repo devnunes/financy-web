@@ -1,4 +1,33 @@
+import { Plus } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import Icon from '@/components/Icon'
+import { Tag } from '@/components/Tag'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card'
+import {
+  useCategories,
+  useCategoriesIsLoading,
+  useLoadCategories,
+} from '@/stores/categoryStore'
+
 export default function Categories() {
+  const loadCategories = useLoadCategories()
+  const categoriesIsLoading = useCategoriesIsLoading()
+  const categories = useCategories()
+  const [_error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setError(null)
+    loadCategories().catch(err =>
+      setError(err?.message || 'Erro ao carregar categorias')
+    )
+  }, [loadCategories])
+
   return (
     <section className="w-full max-w-7xl mx-auto flex flex-col gap-6 ">
       <header className="flex items-center w-full mb-2">
@@ -22,8 +51,8 @@ export default function Categories() {
           <Plus size={16} /> Nova categoria
         </button>
       </header>
-      <div className="flex w-full gap-4">
-        <Card className="w-sm p-6">
+      <div className="flex gap-4">
+        <Card className="w-full p-6">
           <CardHeader className="flex items-center gap-4">
             <Icon name="tag" className="size-6" />
             <div className="flex flex-col">
@@ -34,7 +63,7 @@ export default function Categories() {
             </div>
           </CardHeader>
         </Card>
-        <Card className="w-sm p-6">
+        <Card className="w-full p-6">
           <CardHeader className="flex items-center gap-4">
             <Icon name="arrow-down-up" color="purple" className="size-6" />
             <div className="flex flex-col">
@@ -45,7 +74,7 @@ export default function Categories() {
             </div>
           </CardHeader>
         </Card>
-        <Card className="w-sm p-6">
+        <Card className="w-full p-6">
           <CardHeader className="flex items-center gap-4">
             <Icon color="blue" className="size-6" />
             <div className="flex flex-col">
@@ -57,21 +86,34 @@ export default function Categories() {
           </CardHeader>
         </Card>
       </div>
-      <div>
-        <Card className="w-3xs p-6">
-          <CardHeader className="grid grid-cols-[1fr_auto_auto] items-start">
-            <Icon name="utensils" />
-            <Icon name="trash-2" />
-            <Icon name="edit" />
-          </CardHeader>
-          <CardContent>
-            <h2>Alimentação</h2>
-          </CardContent>
-          <CardFooter className="justify-between">
-            <Tag text="Alimentação" color="blue"></Tag>
-            <small>12 itens</small>
-          </CardFooter>
-        </Card>
+      <div className="grid grid-cols-4 gap-4">
+        {categoriesIsLoading && <p>Carregando categorias...</p>}
+        {!categoriesIsLoading &&
+          categories.map(category => (
+            <Card key={category.id} className="w-full p-6">
+              <CardHeader className="grid grid-cols-[1fr_auto_auto] items-start">
+                <Icon
+                  name={category.icon}
+                  color={category.color}
+                  bgColor={category.color}
+                />
+                <Icon
+                  name="trash"
+                  bgColor="gray"
+                  className="size-4 text-red-base"
+                />
+                <Icon name="edit" bgColor="gray" className="size-4" />
+              </CardHeader>
+              <CardContent>
+                <h2>{category.title}</h2>
+                <span>{category.description}</span>
+              </CardContent>
+              <CardFooter className="justify-between">
+                <Tag text={category.title} color={category.color}></Tag>
+                <small>12 itens</small>
+              </CardFooter>
+            </Card>
+          ))}
       </div>
     </section>
   )
