@@ -8,6 +8,7 @@ const tagStyles = tv({
   base: 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold',
   variants: {
     color: {
+      transparent: 'bg-transparent text-gray-700',
       gray: 'bg-gray-100 text-gray-700',
       blue: 'bg-blue-light text-blue-dark',
       purple: 'bg-purple-light text-purple-dark',

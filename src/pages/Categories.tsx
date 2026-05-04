@@ -52,8 +52,8 @@ export default function Categories() {
         </button>
       </header>
       <div className="flex gap-4">
-        <Card className="w-full p-6">
-          <CardHeader className="flex items-center gap-4">
+        <Card className="w-full p-6 bg-white">
+          <CardHeader className="flex items-center gap-4 ">
             <Icon name="tag" className="size-6" />
             <div className="flex flex-col">
               <span className="text-28xl font-bold">8</span>
@@ -63,7 +63,7 @@ export default function Categories() {
             </div>
           </CardHeader>
         </Card>
-        <Card className="w-full p-6">
+        <Card className="w-full p-6 bg-white">
           <CardHeader className="flex items-center gap-4">
             <Icon name="arrow-down-up" color="purple" className="size-6" />
             <div className="flex flex-col">
@@ -74,7 +74,7 @@ export default function Categories() {
             </div>
           </CardHeader>
         </Card>
-        <Card className="w-full p-6">
+        <Card className="w-full p-6 bg-white">
           <CardHeader className="flex items-center gap-4">
             <Icon color="blue" className="size-6" />
             <div className="flex flex-col">
@@ -90,7 +90,10 @@ export default function Categories() {
         {categoriesIsLoading && <p>Carregando categorias...</p>}
         {!categoriesIsLoading &&
           categories.map(category => (
-            <Card key={category.id} className="w-full p-6">
+            <Card
+              key={category.id}
+              className="w-full p-6 grid grid-rows-[1fr_auto_auto] gap-5 bg-white"
+            >
               <CardHeader className="grid grid-cols-[1fr_auto_auto] items-start">
                 <Icon
                   name={category.icon}
@@ -104,13 +107,19 @@ export default function Categories() {
                 />
                 <Icon name="edit" bgColor="gray" className="size-4" />
               </CardHeader>
-              <CardContent>
-                <h2>{category.title}</h2>
-                <span>{category.description}</span>
+              <CardContent className="grid gap-1">
+                <h2 className="text-base font-semibold">{category.title}</h2>
+                <span className="text-sm text-gray-600 h-10">
+                  {category.description}
+                </span>
               </CardContent>
               <CardFooter className="justify-between">
-                <Tag text={category.title} color={category.color}></Tag>
-                <small>12 itens</small>
+                <Tag
+                  text={category.title}
+                  color={category.color}
+                  className="px-3 py-1 text-sm font-medium rounded-full"
+                ></Tag>
+                <span className="text-sm text-gray-600">12 itens</span>
               </CardFooter>
             </Card>
           ))}

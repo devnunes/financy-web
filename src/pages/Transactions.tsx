@@ -5,6 +5,7 @@ import { FormSelect } from '@/components/FormSelect'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
 import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
+import { Button } from '@/components/ui/button'
 import {
   useLoadTransactions,
   useTransactions,
@@ -46,14 +47,14 @@ export default function Transactions() {
             Gerencie todas as suas transações financeiras.
           </p>
         </div>
-        <button
+        <Button
           className="ml-auto bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary-light"
           type="button"
           aria-label="Nova transação"
           onClick={() => setToggleNewTransactionDialog(true)}
         >
           <Plus size={16} /> Nova transação
-        </button>
+        </Button>
       </header>
 
       <form

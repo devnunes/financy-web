@@ -37,8 +37,9 @@ export default function TransactionsCard({
 
       <Button
         onClick={() => setToggleNewTransactionDialog(true)}
+        aria-label="Nova transação"
         type="button"
-        className="h-14 w-full border-0 bg-white text-primary text-sm/20 font-medium flex items-center justify-center gap-2 hover:cursor-pointer"
+        className="h-14 w-full border-0 bg-white text-sm/20 font-medium flex items-center justify-center gap-2 hover:text-primary-dark"
       >
         <Plus size={18} />
         <span>Nova transação</span>
