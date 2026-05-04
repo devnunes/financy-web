@@ -8,7 +8,7 @@ import Logo from '@/assets/images/Logo.svg'
 import CustomLink from '@/components/CustomLink'
 import { FormInput } from '@/components/FormInput'
 import { LabelButton } from '@/components/LabelButton'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthSignIn } from '@/stores/authStore'
 
 const signInSchema = z.object({
   email: z.email({ message: 'Digite um email válido' }),
@@ -21,7 +21,7 @@ type SignInFormData = z.infer<typeof signInSchema>
 
 export default function SignIn() {
   const [loading, setLoading] = React.useState(false)
-  const signIn = useAuthStore(state => state.signIn)
+  const signIn = useAuthSignIn()
   const form = useForm<SignInFormData>({ resolver: zodResolver(signInSchema) })
   const {
     handleSubmit,

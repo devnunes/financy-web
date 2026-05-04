@@ -1,21 +1,23 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import SessionLoading from '@/components/SessionLoading'
 import SignIn from '@/pages/Auth/SignIn'
 import Categories from '@/pages/Categories'
 import Dashboard from '@/pages/Dashboard'
 import Profile from '@/pages/Profile'
 import Transactions from '@/pages/Transactions'
 import SignUp from '../pages/Auth/SignUp'
-import { useAuthStore } from '../stores/authStore'
+import {
+  useAuthIsAuthenticated,
+  useAuthIsCheckingSession,
+} from '../stores/authStore'
 import MissingAuthenticationRoute from './MissingAutheticationRoute'
 import ProtectedRoute from './ProtectedRoute'
 
 function RootRedirect() {
-  const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-  const isCheckingSession = useAuthStore(state => state.isCheckingSession)
+  const isCheckingSession = useAuthIsCheckingSession()
+  const isAuthenticated = useAuthIsAuthenticated()
 
-  if (isCheckingSession) {
-    return null
-  }
+  if (isCheckingSession) return <SessionLoading />
 
   return <Navigate to={isAuthenticated ? '/dashboard' : '/sign-in'} replace />
 }

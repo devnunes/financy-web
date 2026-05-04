@@ -1,10 +1,12 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuthStore } from '@/stores/authStore'
+import SessionLoading from '@/components/SessionLoading'
+import { useAuthIsAuthenticated, useAuthIsCheckingSession } from '@/stores/authStore'
 
 export default function MissingAuthenticationRoute() {
-  const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-  const isCheckingSession = useAuthStore(state => state.isCheckingSession)
-  if (isCheckingSession) return null
+  const isCheckingSession = useAuthIsCheckingSession()
+  const isAuthenticated = useAuthIsAuthenticated()
+
+  if (isCheckingSession) return <SessionLoading />
   if (isAuthenticated) return <Navigate to="/" replace />
 
   return <Outlet />

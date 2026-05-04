@@ -7,7 +7,7 @@ import z from 'zod/v4'
 import Logo from '@/assets/images/Logo.svg'
 import { FormInput } from '@/components/FormInput'
 import { LabelButton } from '@/components/LabelButton'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthSignUp } from '@/stores/authStore'
 
 const signUpSchema = z.object({
   name: z
@@ -23,7 +23,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>
 
 export default function SignUp() {
   const [loading, setLoading] = React.useState(false)
-  const signUp = useAuthStore(state => state.signUp)
+  const signUp = useAuthSignUp()
   const form = useForm<SignUpFormData>({ resolver: zodResolver(signUpSchema) })
   const {
     handleSubmit,

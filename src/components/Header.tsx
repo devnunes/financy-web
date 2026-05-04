@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import Logo from '@/assets/images/logo.svg'
 import { cn } from '@/lib/utils'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthIsAuthenticated, useAuthUser } from '@/stores/authStore'
 
 const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
   cn('text-sm leading-5 transition-colors', {
@@ -10,8 +10,8 @@ const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
   })
 
 export default function Header() {
-  const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-  const user = useAuthStore(state => state.user)
+  const isAuthenticated = useAuthIsAuthenticated()
+  const user = useAuthUser()
   const userInitials = user?.initials?.slice(0, 2).toUpperCase() ?? 'CT'
 
   return (

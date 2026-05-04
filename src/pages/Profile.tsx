@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { FormInput } from '@/components/FormInput'
 import Icon from '@/components/Icon'
 import { LabelButton } from '@/components/LabelButton'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthSignOut, useAuthUser } from '@/stores/authStore'
 
 export default function Profile() {
-  const user = useAuthStore(state => state.user)
-  const signOut = useAuthStore(state => state.signOut)
+  const user = useAuthUser()
+  const signOut = useAuthSignOut()
   const [name, setName] = useState(user?.name || '')
 
   if (!user) {
