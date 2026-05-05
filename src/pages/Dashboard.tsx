@@ -25,9 +25,7 @@ export default function Dashboard() {
     loadCategoriesSummary()
   }, [loadTransactions, loadTransactionsSummary, loadCategoriesSummary])
 
-  const categoriesSummary = useCategoriesSummary()
-
-  const dashboardCategories = categoriesSummary
+  const { categories } = useCategoriesSummary()
 
   return (
     <section className="w-full max-w-296 flex flex-col gap-6">
@@ -78,7 +76,7 @@ export default function Dashboard() {
 
       <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-6">
         <TransactionsCard transactions={transactions} />
-        <CategoryCard categories={dashboardCategories} />
+        <CategoryCard categories={categories} />
       </div>
     </section>
   )

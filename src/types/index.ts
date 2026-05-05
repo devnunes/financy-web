@@ -47,14 +47,21 @@ export interface Category {
   updatedAt?: string
   user?: User
   transactions?: Transaction[]
+  transactionCount?: number
 }
 
 export interface CategoriesSummary {
+  transactionCountByUser: number
+  categoryCount: number
+  categories: CategoriesAggregated[]
+}
+
+export interface CategoriesAggregated {
   id: string
   title: string
-  totalAmount: number
-  transactionCount: number
   color: TagColor
+  totalAmount: number
+  transactionCountByCategory: number
 }
 
 export interface SignUpInput {

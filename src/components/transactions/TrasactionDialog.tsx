@@ -16,6 +16,9 @@ import {
 } from '@/components/ui/dialog'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { cn } from '@/lib/utils'
+import { useCategories } from '@/stores/categoryStore'
+import { useCreateTransaction } from '@/stores/transactionStore'
+import { DatePickerInput } from '../DatePickerInput'
 
 interface TransactionDialogProps {
   open: boolean
@@ -23,19 +26,31 @@ interface TransactionDialogProps {
   onSuccess?: () => void
 }
 
-const transactionSchema = z.object({
+const transactionFormSchema = z.object({
   type: z.enum(['expense', 'income']),
-  details: z.object({
-    description: z
-      .string()
-      .min(2, { message: 'A descrição deve conter no mínimo 2 caracteres' }),
-    date: z.string().min(1, { message: 'A data é obrigatória' }),
-    amount: z.string().min(1, { message: 'O valor é obrigatório' }),
-    category: z.string().min(1, { message: 'Selecione uma categoria' }),
-  }),
+  description: z
+    .string()
+    .min(2, { error: 'A descrição deve conter no mínimo 2 caracteres' }),
+  date: z
+    .string({ error: 'A data é obrigatória' })
+    .min(1, { error: 'A data é obrigatória' })
+    .pipe(z.iso.date({ error: 'Data inválida' })),
+  amount: z.string().min(1, { error: 'O valor é obrigatório' }),
+  categoryId: z.string().min(1, { error: 'Selecione uma categoria' }),
 })
 
-type TransactionFormData = z.infer<typeof transactionSchema>
+const transactionPayloadSchema = transactionFormSchema.extend({
+  date: z.iso.date({ error: 'Data inválida' }).transform(value => {
+    return new Date(`${value}T00:00:00`)
+  }),
+  amount: z
+    .string({ error: 'O valor é obrigatório' })
+    .min(1, { error: 'O valor é obrigatório' })
+    .transform(value => Number(value.replace(/\./g, '').replace(',', '')))
+    .pipe(z.number().min(0.01, { error: 'O valor deve ser maior que zero' })),
+})
+
+type TransactionFormData = z.infer<typeof transactionFormSchema>
 
 export function TransactionDialog({
   open,
@@ -45,16 +60,17 @@ export function TransactionDialog({
   const [transactionType, setTransactionType] = useState<'expense' | 'income'>(
     'expense'
   )
+  const categories = useCategories()
+  const createTransaction = useCreateTransaction()
+
   const methods = useForm<TransactionFormData>({
-    resolver: zodResolver(transactionSchema),
+    resolver: zodResolver(transactionFormSchema),
     defaultValues: {
       type: 'expense',
-      details: {
-        description: '',
-        date: '',
-        amount: '',
-        category: '',
-      },
+      description: '',
+      date: '',
+      amount: '',
+      categoryId: '',
     },
   })
 
@@ -80,20 +96,21 @@ export function TransactionDialog({
   }
 
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
-    methods.setValue('details.amount', formatAmount(event.target.value), {
+    methods.setValue('amount', formatAmount(event.target.value), {
       shouldDirty: true,
       shouldValidate: true,
     })
   }
 
-  const onSubmit = () => {
-    methods.reset()
-    setTransactionType('expense')
+  const onSubmit = async (data: TransactionFormData) => {
+    const payload = transactionPayloadSchema.parse(data)
+    await createTransaction(payload)
     onSuccess?.()
+    methods.reset()
     onOpenChange(false)
   }
 
-  const amountValue = methods.watch('details.amount')
+  const amountValue = methods.watch('amount')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -180,22 +197,22 @@ export function TransactionDialog({
             </div>
 
             <FormInput<TransactionFormData>
-              name="details.description"
+              name="description"
               label="Descrição"
               placeholder="Ex. Almoço no restaurante"
             />
 
             <div className="flex w-full gap-4">
               <div className="flex-1">
-                <FormInput<TransactionFormData>
-                  name="details.date"
+                <DatePickerInput<TransactionFormData>
+                  name="date"
                   label="Data"
                   placeholder="Selecione"
                 />
               </div>
               <div className="flex-1">
                 <FormInput<TransactionFormData>
-                  name="details.amount"
+                  name="amount"
                   label="Valor"
                   placeholder="0,00"
                   leftIcon={<span className="text-sm font-medium">R$</span>}
@@ -207,15 +224,15 @@ export function TransactionDialog({
             </div>
 
             <FormSelect<TransactionFormData>
-              name="details.category"
+              name="categoryId"
               label="Categoria"
               placeholder="Selecione"
+              emptyMessage="Sem categorias cadastradas"
               triggerClassName="rounded-lg px-[13px] text-base"
-              options={[
-                { value: 'food', label: 'Alimentação' },
-                { value: 'transport', label: 'Transporte' },
-                { value: 'salary', label: 'Salário' },
-              ]}
+              options={categories.map(category => ({
+                value: category.id,
+                label: category.title,
+              }))}
             />
 
             <Button

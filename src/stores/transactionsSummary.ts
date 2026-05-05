@@ -41,15 +41,12 @@ const useTransactionSummaryStore = create<TransactionSummaryState>()(
     async function getTransactionsSummary() {
       const { isLoading, hasLoaded } = get()
       if (isLoading || hasLoaded) return
-      console.log('Loading transactions summary...')
       try {
         const { data } =
           await apolloClient.query<GetTransactionsSummaryQueryResponse>({
             query: GET_TRANSACTIONS_SUMMARY,
             fetchPolicy: 'network-only',
           })
-
-        console.log('Transactions summary data received:', data)
 
         if (!data?.getTransactionSummary)
           throw new Error('No transactions data received')

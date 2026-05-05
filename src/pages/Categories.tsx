@@ -10,6 +10,10 @@ import {
   CardHeader,
 } from '@/components/ui/card'
 import {
+  useCategoriesSummary,
+  useLoadCategoriesSummary,
+} from '@/stores/categoriesSummary'
+import {
   useCategories,
   useCategoriesIsLoading,
   useLoadCategories,
@@ -19,14 +23,16 @@ export default function Categories() {
   const loadCategories = useLoadCategories()
   const categoriesIsLoading = useCategoriesIsLoading()
   const categories = useCategories()
+  const loadCategoriesSummary = useLoadCategoriesSummary()
+  const categoriesSummary = useCategoriesSummary()
   const [_error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setError(null)
-    loadCategories().catch(err =>
-      setError(err?.message || 'Erro ao carregar categorias')
+    Promise.all([loadCategoriesSummary(), loadCategories()]).catch(err =>
+      setError(err?.message || 'Erro ao carregar resumo de categorias')
     )
-  }, [loadCategories])
+  }, [loadCategories, loadCategoriesSummary])
 
   return (
     <section className="w-full max-w-7xl mx-auto flex flex-col gap-6 ">
@@ -56,7 +62,9 @@ export default function Categories() {
           <CardHeader className="flex items-center gap-4 ">
             <Icon name="tag" className="size-6" />
             <div className="flex flex-col">
-              <span className="text-28xl font-bold">8</span>
+              <span className="text-28xl font-bold">
+                {categoriesSummary.categoryCount}
+              </span>
               <CardDescription className="text-xs text-gray-500 uppercase tracking-wider">
                 Total de categorias
               </CardDescription>
@@ -67,7 +75,9 @@ export default function Categories() {
           <CardHeader className="flex items-center gap-4">
             <Icon name="arrow-down-up" color="purple" className="size-6" />
             <div className="flex flex-col">
-              <h2 className="text-28xl font-bold">27</h2>
+              <h2 className="text-28xl font-bold">
+                {categoriesSummary.transactionCountByUser}
+              </h2>
               <CardDescription className="text-xs text-gray-500 uppercase tracking-wider">
                 Total de transações
               </CardDescription>
@@ -119,7 +129,9 @@ export default function Categories() {
                   color={category.color}
                   className="px-3 py-1 text-sm font-medium rounded-full"
                 ></Tag>
-                <span className="text-sm text-gray-600">12 itens</span>
+                <span className="text-sm text-gray-600">
+                  {category.transactionCount} itens
+                </span>
               </CardFooter>
             </Card>
           ))}

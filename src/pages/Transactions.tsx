@@ -6,6 +6,7 @@ import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
 import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
 import { Button } from '@/components/ui/button'
+import { useLoadCategories } from '@/stores/categoryStore'
 import {
   useLoadTransactions,
   useTransactions,
@@ -16,6 +17,7 @@ export default function Transactions() {
   const loading = useTransactionsIsLoading()
   const transactions = useTransactions()
   const loadTransactions = useLoadTransactions()
+  const loadCategories = useLoadCategories()
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const resultsPerPage = 10
@@ -25,10 +27,10 @@ export default function Transactions() {
 
   useEffect(() => {
     setError(null)
-    loadTransactions().catch(err =>
+    Promise.all([loadTransactions(), loadCategories()]).catch(err =>
       setError(err?.message || 'Erro ao carregar transações')
     )
-  }, [loadTransactions])
+  }, [loadTransactions, loadCategories])
 
   return (
     <section

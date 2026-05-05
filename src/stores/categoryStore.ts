@@ -1,12 +1,20 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient } from '@/lib/graphql/apollo'
+import { CREATE_CATEGORY } from '@/lib/graphql/mutations/createCategory'
 import { GET_CATEGORIES } from '@/lib/graphql/queries/getCategories'
 import type { Category } from '@/types'
 
+type CreateCategoryInput = {
+  title: string
+  description: string
+  color: string
+  icon: string
+}
 interface CategoryState {
   categories: Category[]
   loadCategories: () => Promise<void>
+  createCategory: (data: CreateCategoryInput) => Promise<void>
   isLoading: boolean
   hasLoaded: boolean
   error: string | null
@@ -15,14 +23,6 @@ interface CategoryState {
 type GetCategoriesQueryResponse = {
   getCategories: Category[]
 }
-
-export const categoryStore = create<CategoryState>(_set => ({
-  categories: [],
-  loadCategories: () => Promise.resolve(),
-  isLoading: false,
-  hasLoaded: false,
-  error: null,
-}))
 
 const useCategoryStore = create<CategoryState>()(
   immer((set, get) => {
@@ -41,7 +41,6 @@ const useCategoryStore = create<CategoryState>()(
       })
 
       if (!data?.getCategories) throw new Error('No categories data received')
-      console.log('data.getCategories', data.getCategories)
       set(state => {
         state.categories = data.getCategories
         state.isLoading = false
@@ -49,9 +48,19 @@ const useCategoryStore = create<CategoryState>()(
       })
     }
 
+    async function createCategory(createCategoryInput: CreateCategoryInput) {
+      const { data } = await apolloClient.mutate({
+        mutation: CREATE_CATEGORY,
+        variables: { data: createCategoryInput },
+      })
+      if (!data) throw new Error('No category data received')
+      console.log('data.createCategory', data, typeof data)
+    }
+
     return {
       categories: [],
       loadCategories,
+      createCategory,
       isLoading: false,
       hasLoaded: false,
       error: null,
@@ -64,28 +73,3 @@ export const useLoadCategories = () =>
   useCategoryStore(state => state.loadCategories)
 export const useCategoriesIsLoading = () =>
   useCategoryStore(state => state.isLoading)
-
-// storeCategories.map(category => {
-//   const categoryTransactions = category.transactions ?? []
-//   const expenseTransactions = categoryTransactions.filter(
-//     transaction => transaction.type === 'expense'
-//   )
-//   const totalAmount = expenseTransactions.reduce(
-//     (acc, transaction) => acc + transaction.amount,
-//     0
-//   )
-//   const amountLabel = new Intl.NumberFormat('pt-BR', {
-//     style: 'currency',
-//     currency: 'BRL',
-//   }).format(totalAmount)
-//   const itemCount = categoryTransactions.length
-//   const itemLabel = `${itemCount} ${itemCount === 1 ? 'item' : 'itens'}`
-
-//   return {
-//     id: category.id,
-//     name: category.title,
-//     items: itemLabel,
-//     amount: amountLabel,
-//     categoryColor: category.color,
-//   }
-// })

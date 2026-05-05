@@ -2,10 +2,10 @@ import { ChevronRight } from 'lucide-react'
 import CustomLink from '@/components/CustomLink'
 import { Tag } from '@/components/Tag'
 import { currencyFormatter } from '@/lib/utils'
-import type { CategoriesSummary } from '@/types'
+import type { CategoriesAggregated } from '@/types'
 
 export interface CategoryCardProps {
-  categories: CategoriesSummary[]
+  categories: CategoriesAggregated[]
 }
 
 function handleCountText(count: number): string {
@@ -43,7 +43,7 @@ export default function CategoryCard({ categories }: CategoryCardProps) {
               <Tag text={category.title} color={category.color} />
             </div>
             <span className="text-sm text-gray-600 text-right">
-              {handleCountText(category.transactionCount)}
+              {handleCountText(category.transactionCountByCategory)}
             </span>
             <span className="text-sm font-semibold text-gray-800">
               {currencyFormatter.format(category.totalAmount / 100)}

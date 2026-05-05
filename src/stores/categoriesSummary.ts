@@ -5,7 +5,7 @@ import { GET_CATEGORIES_SUMMARY } from '@/lib/graphql/queries/getCategoriesSumma
 import type { CategoriesSummary } from '@/types'
 
 interface CategoryState {
-  categoriesSummary: CategoriesSummary[]
+  categoriesSummary: CategoriesSummary
   loadCategoriesSummary: () => Promise<void>
   isLoading: boolean
   hasLoaded: boolean
@@ -13,16 +13,8 @@ interface CategoryState {
 }
 
 type GetCategoriesSummaryQueryResponse = {
-  getCategoriesSummary: CategoriesSummary[]
+  getCategoriesSummary: CategoriesSummary
 }
-
-export const categoryStore = create<CategoryState>(_set => ({
-  categoriesSummary: [],
-  loadCategoriesSummary: () => Promise.resolve(),
-  isLoading: false,
-  hasLoaded: false,
-  error: null,
-}))
 
 const useCategorySummaryStore = create<CategoryState>()(
   immer((set, get) => {
@@ -43,7 +35,6 @@ const useCategorySummaryStore = create<CategoryState>()(
 
       if (!data?.getCategoriesSummary)
         throw new Error('No categories data received')
-      console.log('data.getCategoriesSummary', data.getCategoriesSummary)
       set(state => {
         state.categoriesSummary = data.getCategoriesSummary
         state.isLoading = false
@@ -52,7 +43,11 @@ const useCategorySummaryStore = create<CategoryState>()(
     }
 
     return {
-      categoriesSummary: [],
+      categoriesSummary: {
+        transactionCountByUser: 0,
+        categoryCount: 0,
+        categories: [],
+      },
       loadCategoriesSummary,
       isLoading: false,
       hasLoaded: false,

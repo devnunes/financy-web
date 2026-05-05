@@ -201,7 +201,7 @@ function FieldError({
     }
 
     return (
-      <ul className="ml-4 flex list-disc flex-col gap-1">
+      <ul className="ml-4 flex list-disc flex-col gap-1 text-xs text-gray-500">
         {uniqueErrors.map(
           error =>
             error?.message && <li key={error.message}>{error.message}</li>
@@ -218,7 +218,7 @@ function FieldError({
     <div
       role="alert"
       data-slot="field-error"
-      className={cn('text-sm font-normal text-destructive', className)}
+      className={cn('text-sm font-normal text-gray-500', className)}
       {...props}
     >
       {content}

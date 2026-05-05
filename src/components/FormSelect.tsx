@@ -16,7 +16,7 @@ interface SelectOption {
   label: string
 }
 
-export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues>
+interface FormSelectProps<TFieldValues extends FieldValues = FieldValues>
   extends Omit<
     React.ComponentProps<typeof Select>,
     'name' | 'value' | 'defaultValue' | 'onValueChange'
@@ -30,6 +30,7 @@ export interface FormSelectProps<TFieldValues extends FieldValues = FieldValues>
   errorText?: string
   placeholder?: string
   options?: SelectOption[]
+  emptyMessage?: string
   triggerClassName?: string
 }
 
@@ -80,6 +81,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
   errorText,
   placeholder = 'Selecione',
   options = defaultOptions,
+  emptyMessage = 'Nenhuma opção disponível',
   triggerClassName,
   ...props
 }: FormSelectProps<TFieldValues>) {
@@ -90,6 +92,7 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
     name
   )
   const effectiveErrorText = errorText ?? formErrorText
+  const hasOptions = options.length > 0
 
   const resolvedValue =
     value ?? (typeof formValue === 'string' ? formValue : undefined)
@@ -127,15 +130,21 @@ export function FormSelect<TFieldValues extends FieldValues = FieldValues>({
             triggerClassName
           )}
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={placeholder} className="text-gray-400" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {options.map(option => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            {hasOptions ? (
+              options.map(option => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem value="__empty_option__" disabled>
+                {emptyMessage}
               </SelectItem>
-            ))}
+            )}
           </SelectGroup>
         </SelectContent>
       </Select>
