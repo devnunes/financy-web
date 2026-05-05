@@ -86,9 +86,15 @@ export default function Categories() {
         </Card>
         <Card className="w-full p-6 bg-white">
           <CardHeader className="flex items-center gap-4">
-            <Icon color="blue" className="size-6" />
+            <Icon
+              name={categoriesSummary.mostUsedCategory?.icon}
+              color={categoriesSummary.mostUsedCategory?.color}
+              className="size-6"
+            />
             <div className="flex flex-col">
-              <h2 className="text-28xl font-bold">Alimentação</h2>
+              <h2 className="text-28xl font-bold">
+                {categoriesSummary.mostUsedCategory?.title}
+              </h2>
               <CardDescription className="text-xs text-gray-500 uppercase tracking-wider">
                 Categoria mais utilizada
               </CardDescription>

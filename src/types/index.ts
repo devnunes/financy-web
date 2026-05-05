@@ -53,12 +53,14 @@ export interface Category {
 export interface CategoriesSummary {
   transactionCountByUser: number
   categoryCount: number
+  mostUsedCategory: CategoriesAggregated
   categories: CategoriesAggregated[]
 }
 
 export interface CategoriesAggregated {
   id: string
   title: string
+  icon: IconName
   color: TagColor
   totalAmount: number
   transactionCountByCategory: number

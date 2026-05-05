@@ -12,6 +12,11 @@ export const GET_CATEGORIES_SUMMARY = gql`
         totalAmount
         transactionCountByCategory
       }
+      mostUsedCategory {
+        title
+        icon
+        color
+      }
     }
   }
 `

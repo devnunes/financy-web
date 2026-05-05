@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient } from '@/lib/graphql/apollo'
 import { GET_CATEGORIES_SUMMARY } from '@/lib/graphql/queries/getCategoriesSummary'
-import type { CategoriesSummary } from '@/types'
+import type { CategoriesAggregated, CategoriesSummary } from '@/types'
 
 interface CategoryState {
   categoriesSummary: CategoriesSummary
@@ -35,6 +35,7 @@ const useCategorySummaryStore = create<CategoryState>()(
 
       if (!data?.getCategoriesSummary)
         throw new Error('No categories data received')
+      console.log('getCategoriesSummary', data.getCategoriesSummary)
       set(state => {
         state.categoriesSummary = data.getCategoriesSummary
         state.isLoading = false
@@ -47,6 +48,7 @@ const useCategorySummaryStore = create<CategoryState>()(
         transactionCountByUser: 0,
         categoryCount: 0,
         categories: [],
+        mostUsedCategory: {} as CategoriesAggregated,
       },
       loadCategoriesSummary,
       isLoading: false,

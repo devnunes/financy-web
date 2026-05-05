@@ -39,6 +39,7 @@ const useCategoryStore = create<CategoryState>()(
         query: GET_CATEGORIES,
         fetchPolicy: 'network-only',
       })
+      console.log('data', data)
 
       if (!data?.getCategories) throw new Error('No categories data received')
       set(state => {
