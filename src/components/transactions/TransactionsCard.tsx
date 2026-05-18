@@ -4,7 +4,10 @@ import { useMemo, useState } from 'react'
 import CustomLink from '@/components/CustomLink'
 import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
 import { Button } from '@/components/ui/button'
-import { TRANSACTIONS } from '@/lib/graphql/queries/transactions'
+import {
+  TRANSACTIONS,
+  TRANSACTIONS_RECENT_VARIABLES,
+} from '@/lib/graphql/queries/transactions'
 import { formatTransaction } from '@/lib/utils'
 import type { Transaction } from '@/types'
 import { TransactionRow } from './TransactionRow'
@@ -14,7 +17,9 @@ export default function TransactionsCard() {
     loading,
     error,
     data: { transactions = [] } = {},
-  } = useQuery(TRANSACTIONS)
+  } = useQuery(TRANSACTIONS, {
+    variables: TRANSACTIONS_RECENT_VARIABLES,
+  })
 
   const parsedTransactions = useMemo(() => {
     if (!transactions) return []
@@ -45,7 +50,7 @@ export default function TransactionsCard() {
           <div className="p-6 text-center text-gray-500">Carregando...</div>
         ) : error ? (
           <div className="p-6 text-center text-red-500">
-            Erro ao carregar transações
+            Erro ao carregar transações: {error.message}
           </div>
         ) : (
           parsedTransactions.map((transaction: Transaction) => (

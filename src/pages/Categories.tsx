@@ -11,7 +11,9 @@ import {
 } from '@/components/ui/card'
 import {
   CATEGORIES,
+  CATEGORIES_ALL_VARIABLES,
   CATEGORIES_SUMMARY,
+  CATEGORIES_SUMMARY_VARIABLES,
 } from '@/lib/graphql/queries/categories'
 
 export default function Categories() {
@@ -19,7 +21,9 @@ export default function Categories() {
     loading: categoriesIsLoading,
     error: categoriesError,
     data: { categories = [] } = {},
-  } = useQuery(CATEGORIES)
+  } = useQuery(CATEGORIES, {
+    variables: CATEGORIES_ALL_VARIABLES,
+  })
   const {
     error: summaryError,
     data: {
@@ -29,7 +33,9 @@ export default function Categories() {
         mostUsedCategory = null,
       } = {},
     } = {},
-  } = useQuery(CATEGORIES_SUMMARY)
+  } = useQuery(CATEGORIES_SUMMARY, {
+    variables: CATEGORIES_SUMMARY_VARIABLES,
+  })
   return (
     <section className="w-full max-w-7xl mx-auto flex flex-col gap-6 ">
       <header className="flex items-center w-full mb-2">

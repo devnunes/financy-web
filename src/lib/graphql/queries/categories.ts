@@ -1,9 +1,18 @@
 import { gql, type TypedDocumentNode } from '@apollo/client'
 import type { CategoriesAggregated, Category } from '@/types'
 
-export const CATEGORIES: TypedDocumentNode<{ categories: Category[] }> = gql`
-  query Categories {
-    categories {
+type CategoriesQueryVariables = {
+  data: {
+    max?: number
+  }
+}
+
+export const CATEGORIES: TypedDocumentNode<
+  { categories: Category[] },
+  CategoriesQueryVariables
+> = gql`
+  query Categories($data: CategoriesFilterInput!) {
+    categories(data: $data) {
       id
       title
       description
@@ -17,16 +26,27 @@ export const CATEGORIES: TypedDocumentNode<{ categories: Category[] }> = gql`
   }
 `
 
-export const CATEGORIES_SUMMARY: TypedDocumentNode<{
-  categoriesSummary: {
-    transactionCountByUser: number
-    categoryCount: number
-    categories: CategoriesAggregated[]
-    mostUsedCategory: Pick<Category, 'title' | 'icon' | 'color'> | null
-  }
-}> = gql`
-  query CategoriesSummary {
-    categoriesSummary {
+export const CATEGORIES_ALL_VARIABLES: CategoriesQueryVariables = {
+  data: {},
+}
+
+export const CATEGORIES_RECENT_VARIABLES: CategoriesQueryVariables = {
+  data: { max: 5 },
+}
+
+export const CATEGORIES_SUMMARY: TypedDocumentNode<
+  {
+    categoriesSummary: {
+      transactionCountByUser: number
+      categoryCount: number
+      categories: CategoriesAggregated[]
+      mostUsedCategory: Pick<Category, 'title' | 'icon' | 'color'> | null
+    }
+  },
+  CategoriesQueryVariables
+> = gql`
+  query CategoriesSummary($data: CategoriesFilterInput!) {
+    categoriesSummary(data: $data) {
       transactionCountByUser
       categoryCount
       categories {
@@ -44,3 +64,8 @@ export const CATEGORIES_SUMMARY: TypedDocumentNode<{
     }
   }
 `
+export const CATEGORIES_SUMMARY_VARIABLES = {
+  data: {
+    max: 5, // Ajuste para garantir que o argumento obrigatório seja enviado corretamente
+  },
+}

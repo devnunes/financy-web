@@ -2,7 +2,10 @@ import { useQuery } from '@apollo/client/react'
 import { ChevronRight } from 'lucide-react'
 import CustomLink from '@/components/CustomLink'
 import { Tag } from '@/components/Tag'
-import { CATEGORIES_SUMMARY } from '@/lib/graphql/queries/categories'
+import {
+  CATEGORIES_SUMMARY,
+  CATEGORIES_SUMMARY_VARIABLES,
+} from '@/lib/graphql/queries/categories'
 import { currencyFormatter } from '@/lib/utils'
 
 function handleCountText(count: number): string {
@@ -20,7 +23,9 @@ export default function CategoryCard() {
     loading,
     error,
     data: { categoriesSummary: { categories = [] } = {} } = {},
-  } = useQuery(CATEGORIES_SUMMARY)
+  } = useQuery(CATEGORIES_SUMMARY, {
+    variables: CATEGORIES_SUMMARY_VARIABLES,
+  })
   return (
     <article className="rounded-xl border border-gray-200 bg-white overflow-hidden h-fit">
       <header className="h-14 px-5 border-b border-gray-200 flex items-center justify-between">

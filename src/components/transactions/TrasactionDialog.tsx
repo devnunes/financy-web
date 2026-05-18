@@ -19,8 +19,15 @@ import {
   CREATE_TRANSACTION,
   UPDATE_TRANSACTION,
 } from '@/lib/graphql/mutations/transactions'
-import { CATEGORIES } from '@/lib/graphql/queries/categories'
-import { TRANSACTIONS } from '@/lib/graphql/queries/transactions'
+import {
+  CATEGORIES,
+  CATEGORIES_ALL_VARIABLES,
+} from '@/lib/graphql/queries/categories'
+import {
+  TRANSACTIONS,
+  TRANSACTIONS_ALL_VARIABLES,
+  TRANSACTIONS_RECENT_VARIABLES,
+} from '@/lib/graphql/queries/transactions'
 import {
   type TransactionFormInput,
   transactionFormSchema,
@@ -62,12 +69,17 @@ export function TransactionDialog({
   const [transactionType, setTransactionType] = useState<'expense' | 'income'>(
     transaction ? transaction.type : 'expense'
   )
-  const { data: { categories = [] } = {} } = useQuery(CATEGORIES)
+  const { data: { categories = [] } = {} } = useQuery(CATEGORIES, {
+    variables: CATEGORIES_ALL_VARIABLES,
+  })
 
   const [createTransaction, { loading: creating }] = useMutation(
     CREATE_TRANSACTION,
     {
-      refetchQueries: [{ query: TRANSACTIONS }],
+      refetchQueries: [
+        { query: TRANSACTIONS, variables: TRANSACTIONS_ALL_VARIABLES },
+        { query: TRANSACTIONS, variables: TRANSACTIONS_RECENT_VARIABLES },
+      ],
       awaitRefetchQueries: true,
     }
   )
@@ -75,7 +87,10 @@ export function TransactionDialog({
   const [updateTransaction, { loading: updating }] = useMutation(
     UPDATE_TRANSACTION,
     {
-      refetchQueries: [{ query: TRANSACTIONS }],
+      refetchQueries: [
+        { query: TRANSACTIONS, variables: TRANSACTIONS_ALL_VARIABLES },
+        { query: TRANSACTIONS, variables: TRANSACTIONS_RECENT_VARIABLES },
+      ],
       awaitRefetchQueries: true,
     }
   )

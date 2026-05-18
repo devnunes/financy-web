@@ -1,11 +1,20 @@
 import { gql, type TypedDocumentNode } from '@apollo/client'
 import type { Transaction } from '@/types'
 
-export const TRANSACTIONS: TypedDocumentNode<{
-  transactions: Transaction[]
-}> = gql`
-  query Transactions {
-    transactions {
+type TransactionsQueryVariables = {
+  data: {
+    max?: number
+  }
+}
+
+export const TRANSACTIONS: TypedDocumentNode<
+  {
+    transactions: Transaction[]
+  },
+  TransactionsQueryVariables
+> = gql`
+  query Transactions($data: TransactionsFilterInput!) {
+    transactions(data: $data) {
       id
       description
       amount
@@ -21,6 +30,15 @@ export const TRANSACTIONS: TypedDocumentNode<{
     }
   }
 `
+
+export const TRANSACTIONS_ALL_VARIABLES: TransactionsQueryVariables = {
+  data: {},
+}
+
+export const TRANSACTIONS_RECENT_VARIABLES: TransactionsQueryVariables = {
+  data: { max: 5 },
+}
+
 export const TRANSACTION: TypedDocumentNode<
   { transaction: Transaction },
   { data: { id: string } }

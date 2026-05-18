@@ -10,7 +10,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { DELETE_TRANSACTION } from '@/lib/graphql/mutations/transactions'
-import { TRANSACTIONS } from '@/lib/graphql/queries/transactions'
+import {
+  TRANSACTIONS,
+  TRANSACTIONS_ALL_VARIABLES,
+  TRANSACTIONS_RECENT_VARIABLES,
+} from '@/lib/graphql/queries/transactions'
 
 interface TransactionDeleteDialogProps {
   open: boolean
@@ -31,7 +35,10 @@ export function TransactionDeleteDialog({
   const [deleteTransaction, { loading: deleting }] = useMutation(
     DELETE_TRANSACTION,
     {
-      refetchQueries: [{ query: TRANSACTIONS }],
+      refetchQueries: [
+        { query: TRANSACTIONS, variables: TRANSACTIONS_ALL_VARIABLES },
+        { query: TRANSACTIONS, variables: TRANSACTIONS_RECENT_VARIABLES },
+      ],
       awaitRefetchQueries: true,
     }
   )

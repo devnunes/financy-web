@@ -8,13 +8,21 @@ import { Tag } from '@/components/Tag'
 import { TransactionDeleteDialog } from '@/components/transactions/TransactionDeleteDialog'
 import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
 import { Button } from '@/components/ui/button'
-import { TRANSACTIONS } from '@/lib/graphql/queries/transactions'
+import {
+  TRANSACTIONS,
+  TRANSACTIONS_ALL_VARIABLES,
+} from '@/lib/graphql/queries/transactions'
 import { formatTransaction } from '@/lib/utils'
 import { useSetSelectedTransaction } from '@/stores/transactionStore'
 import type { Transaction } from '@/types'
 
 export default function Transactions() {
-  const { loading, error, data: { transactions } = {} } = useQuery(TRANSACTIONS)
+  const { loading, error, data: { transactions } = {} } = useQuery(
+    TRANSACTIONS,
+    {
+      variables: TRANSACTIONS_ALL_VARIABLES,
+    }
+  )
 
   const parsedTransactions = useMemo(() => {
     if (!transactions) return []
