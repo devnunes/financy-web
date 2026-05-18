@@ -2,21 +2,13 @@ import { enableMapSet } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { apolloClient, configureApolloAuthHandlers } from '@/lib/graphql/apollo'
-import { SIGN_IN } from '@/lib/graphql/mutations/signIn'
-import { SIGN_OUT } from '@/lib/graphql/mutations/signOut'
-import { SIGN_UP } from '@/lib/graphql/mutations/signUp'
+import { SIGN_IN, SIGN_OUT, SIGN_UP } from '@/lib/graphql/mutations/auth'
 import { ME } from '@/lib/graphql/queries/me'
 import { REFRESH_TOKEN } from '@/lib/graphql/queries/refreshToken'
-import type { SignInInput, SignUpInput, User } from '@/types'
+import type { AuthInput, AuthOutput, SignInInput, User } from '@/types'
 
 type SignUpMutationResponse = {
   signUp: {
-    user: User
-  }
-}
-
-type SignInMutationResponse = {
-  signIn: {
     user: User
   }
 }
@@ -32,7 +24,7 @@ interface AuthState {
   isRefreshing: boolean
   isCheckingSession: boolean
   syncSession: () => Promise<void>
-  signUp: (data: SignUpInput) => Promise<void>
+  signUp: (data: AuthInput) => Promise<void>
   signIn: (data: SignInInput) => Promise<void>
   signOut: () => Promise<void>
   handleUnauthorized: () => Promise<void>
@@ -143,11 +135,11 @@ const useAuthStore = create<AuthState>()(
       return refreshSessionInFlight
     }
 
-    async function signUp(signUpData: SignUpInput) {
+    async function signUp(signUpData: AuthInput) {
       try {
         const { data } = await apolloClient.mutate<
           SignUpMutationResponse,
-          { data: SignUpInput }
+          { data: AuthInput }
         >({
           mutation: SIGN_UP,
           variables: {
@@ -179,9 +171,10 @@ const useAuthStore = create<AuthState>()(
         state.isCheckingSession = true
       })
       try {
+        console.log('Attempting to sign in with email:', signInData.email)
         const { data } = await apolloClient.mutate<
-          SignInMutationResponse,
-          { data: SignInInput }
+          { signIn: AuthOutput },
+          { data: AuthInput }
         >({
           mutation: SIGN_IN,
           variables: {
@@ -192,8 +185,8 @@ const useAuthStore = create<AuthState>()(
           },
         })
         if (!data?.signIn) throw new Error('SignIn failed')
-        const { user } = data.signIn
-        const userWithInitials = withInitials(user)
+        const { id, email, name } = data.signIn
+        const userWithInitials = withInitials({ id, email, name })
 
         set(state => {
           state.user = userWithInitials

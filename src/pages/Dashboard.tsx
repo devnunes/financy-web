@@ -1,31 +1,12 @@
-import { useEffect } from 'react'
+import { useQuery } from '@apollo/client/react'
 import CategoryCard from '@/components/CategoryCard'
 import Icon from '@/components/Icon'
 import TransactionsCard from '@/components/transactions/TransactionsCard'
-import {
-  useCategoriesSummary,
-  useLoadCategoriesSummary,
-} from '@/stores/categoriesSummary'
-import { useLoadTransactions, useTransactions } from '@/stores/transactionStore'
-import {
-  useGetTransactionsSummary,
-  useTransactionsSummary,
-} from '@/stores/transactionsSummary'
+import { USER_BALANCE } from '@/lib/graphql/queries/user'
+import { currencyFormatter } from '@/lib/utils'
 
 export default function Dashboard() {
-  const loadTransactions = useLoadTransactions()
-  const transactions = useTransactions()
-  const loadTransactionsSummary = useGetTransactionsSummary()
-  const loadCategoriesSummary = useLoadCategoriesSummary()
-  const transactionsSummary = useTransactionsSummary()
-
-  useEffect(() => {
-    loadTransactions()
-    loadTransactionsSummary()
-    loadCategoriesSummary()
-  }, [loadTransactions, loadTransactionsSummary, loadCategoriesSummary])
-
-  const { categories } = useCategoriesSummary()
+  const { error, data: { userBalance } = {} } = useQuery(USER_BALANCE)
 
   return (
     <section className="w-full max-w-296 flex flex-col gap-6">
@@ -41,7 +22,7 @@ export default function Dashboard() {
             </span>
           </div>
           <strong className="text-28xl/32 font-bold text-gray-800 leading-tight line">
-            {transactionsSummary?.balanceLabel ?? 0}
+            {error ? 0 : (userBalance?.balance ?? 0)}
           </strong>
         </article>
         <article
@@ -55,7 +36,7 @@ export default function Dashboard() {
             </span>
           </div>
           <strong className="text-28xl/32 font-bold text-gray-800 leading-tight line">
-            {transactionsSummary?.incomeLabel ?? 0}
+            {error ? 0 : currencyFormatter.format(userBalance?.income ?? 0)}
           </strong>
         </article>
         <article
@@ -69,14 +50,14 @@ export default function Dashboard() {
             </span>
           </div>
           <strong className="text-28xl/32 font-bold text-gray-800 leading-tight line">
-            {transactionsSummary?.expenseLabel ?? 0}
+            {error ? 0 : currencyFormatter.format(userBalance?.expenses ?? 0)}
           </strong>
         </article>
       </div>
 
       <div className="w-full grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <TransactionsCard transactions={transactions} />
-        <CategoryCard categories={categories} />
+        <TransactionsCard />
+        <CategoryCard />
       </div>
     </section>
   )

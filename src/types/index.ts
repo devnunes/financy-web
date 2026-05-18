@@ -50,11 +50,10 @@ export interface Category {
   transactionCount?: number
 }
 
-export interface CategoriesSummary {
-  transactionCountByUser: number
-  categoryCount: number
-  mostUsedCategory: CategoriesAggregated
-  categories: CategoriesAggregated[]
+export interface UserBalance {
+  balance: number
+  income: number
+  expenses: number
 }
 
 export interface CategoriesAggregated {
@@ -66,8 +65,8 @@ export interface CategoriesAggregated {
   transactionCountByCategory: number
 }
 
-export interface SignUpInput {
-  name: string
+export interface AuthInput {
+  name?: string
   email: string
   password: string
 }
@@ -75,4 +74,10 @@ export interface SignUpInput {
 export interface SignInInput {
   email: string
   password: string
+}
+
+export interface AuthOutput {
+  id: string
+  name: string
+  email: string
 }

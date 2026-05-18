@@ -1,8 +1,8 @@
+import { useMutation, useQuery } from '@apollo/client/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowDownCircle, ArrowUpCircle, XIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { z } from 'zod/v4'
 import { FormInput } from '@/components/FormInput'
 import { FormSelect } from '@/components/FormSelect'
 import { Button } from '@/components/ui/button'
@@ -15,9 +15,22 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { cn } from '@/lib/utils'
-import { useCategories } from '@/stores/categoryStore'
-import { useCreateTransaction } from '@/stores/transactionStore'
+import {
+  CREATE_TRANSACTION,
+  UPDATE_TRANSACTION,
+} from '@/lib/graphql/mutations/transactions'
+import { CATEGORIES } from '@/lib/graphql/queries/categories'
+import { TRANSACTIONS } from '@/lib/graphql/queries/transactions'
+import {
+  type TransactionFormInput,
+  transactionFormSchema,
+  transactionPayloadSchema,
+} from '@/lib/schemas/transaction'
+import { cn, formatAmountToString } from '@/lib/utils'
+import {
+  useSelectedTransaction,
+  useSetSelectedTransaction,
+} from '@/stores/transactionStore'
 import { DatePickerInput } from '../DatePickerInput'
 
 interface TransactionDialogProps {
@@ -26,53 +39,69 @@ interface TransactionDialogProps {
   onSuccess?: () => void
 }
 
-const transactionFormSchema = z.object({
-  type: z.enum(['expense', 'income']),
-  description: z
-    .string()
-    .min(2, { error: 'A descrição deve conter no mínimo 2 caracteres' }),
-  date: z
-    .string({ error: 'A data é obrigatória' })
-    .min(1, { error: 'A data é obrigatória' })
-    .pipe(z.iso.date({ error: 'Data inválida' })),
-  amount: z.string().min(1, { error: 'O valor é obrigatório' }),
-  categoryId: z.string().min(1, { error: 'Selecione uma categoria' }),
-})
+function toDateInputValue(value: string | undefined) {
+  if (!value) return ''
+  return value.includes('T') ? value.split('T')[0] : value
+}
 
-const transactionPayloadSchema = transactionFormSchema.extend({
-  date: z.iso.date({ error: 'Data inválida' }).transform(value => {
-    return new Date(`${value}T00:00:00`)
-  }),
-  amount: z
-    .string({ error: 'O valor é obrigatório' })
-    .min(1, { error: 'O valor é obrigatório' })
-    .transform(value => Number(value.replace(/\./g, '').replace(',', '')))
-    .pipe(z.number().min(0.01, { error: 'O valor deve ser maior que zero' })),
-})
-
-type TransactionFormData = z.infer<typeof transactionFormSchema>
+function toAmountInputValue(value: number | undefined) {
+  if (value === undefined || value === null) return ''
+  return value.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
 
 export function TransactionDialog({
   open,
   onOpenChange,
   onSuccess,
 }: TransactionDialogProps) {
+  const transaction = useSelectedTransaction()
+  const setSelectedTransaction = useSetSelectedTransaction()
   const [transactionType, setTransactionType] = useState<'expense' | 'income'>(
-    'expense'
+    transaction ? transaction.type : 'expense'
   )
-  const categories = useCategories()
-  const createTransaction = useCreateTransaction()
+  const { data: { categories = [] } = {} } = useQuery(CATEGORIES)
 
-  const methods = useForm<TransactionFormData>({
+  const [createTransaction, { loading: creating }] = useMutation(
+    CREATE_TRANSACTION,
+    {
+      refetchQueries: [{ query: TRANSACTIONS }],
+      awaitRefetchQueries: true,
+    }
+  )
+
+  const [updateTransaction, { loading: updating }] = useMutation(
+    UPDATE_TRANSACTION,
+    {
+      refetchQueries: [{ query: TRANSACTIONS }],
+      awaitRefetchQueries: true,
+    }
+  )
+
+  const methods = useForm<TransactionFormInput>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
-      type: 'expense',
-      description: '',
-      date: '',
-      amount: '',
-      categoryId: '',
+      type: transactionType,
+      description: transaction ? transaction.description : '',
+      date: transaction ? transaction.date : '',
+      amount: transaction ? transaction.amount.toString() : '',
+      categoryId: transaction ? transaction.categoryId : '',
     },
   })
+
+  useEffect(() => {
+    setTransactionType(transaction ? transaction.type : 'expense')
+
+    methods.reset({
+      type: transaction ? transaction.type : 'expense',
+      description: transaction ? transaction.description : '',
+      date: transaction ? toDateInputValue(transaction.date) : '',
+      amount: transaction ? toAmountInputValue(transaction.amount) : '',
+      categoryId: transaction ? transaction.categoryId : '',
+    })
+  }, [transaction, methods])
 
   function handleTransactionTypeChange(value: string) {
     if (value === 'expense' || value === 'income') {
@@ -81,30 +110,30 @@ export function TransactionDialog({
     }
   }
 
-  function formatAmount(value: string) {
-    const digitsOnly = value.replace(/\D/g, '')
-
-    if (!digitsOnly) {
-      return ''
-    }
-
-    const integerPart = digitsOnly.slice(0, -2) || '0'
-    const decimalPart = digitsOnly.slice(-2).padStart(2, '0')
-    const formattedInteger = Number(integerPart).toLocaleString('pt-BR')
-
-    return `${formattedInteger},${decimalPart}`
-  }
-
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
-    methods.setValue('amount', formatAmount(event.target.value), {
+    methods.setValue('amount', formatAmountToString(event.target.value), {
       shouldDirty: true,
       shouldValidate: true,
     })
   }
 
-  const onSubmit = async (data: TransactionFormData) => {
+  const onSubmit = async (data: TransactionFormInput) => {
     const payload = transactionPayloadSchema.parse(data)
-    await createTransaction(payload)
+
+    if (transaction) {
+      await updateTransaction({
+        variables: {
+          data: {
+            id: transaction.id,
+            ...payload,
+          },
+        },
+      })
+    } else {
+      await createTransaction({ variables: { data: payload } })
+    }
+
+    setSelectedTransaction(null)
     onSuccess?.()
     methods.reset()
     onOpenChange(false)
@@ -121,10 +150,12 @@ export function TransactionDialog({
         <DialogHeader className="relative flex-row items-start gap-4 pr-10">
           <div className="flex flex-1 flex-col items-start gap-0.5 text-left">
             <DialogTitle className="text-base leading-6 font-semibold text-gray-800">
-              Nova transação
+              {transaction ? 'Editar transação' : 'Nova transação'}
             </DialogTitle>
             <DialogDescription className="text-sm leading-5 text-gray-600">
-              Registre sua despesa ou receita
+              {transaction
+                ? 'Edite os detalhes da transação'
+                : 'Registre sua despesa ou receita'}
             </DialogDescription>
           </div>
           <DialogClose asChild>
@@ -196,7 +227,7 @@ export function TransactionDialog({
               </ToggleGroup>
             </div>
 
-            <FormInput<TransactionFormData>
+            <FormInput<TransactionFormInput>
               name="description"
               label="Descrição"
               placeholder="Ex. Almoço no restaurante"
@@ -204,14 +235,14 @@ export function TransactionDialog({
 
             <div className="flex w-full gap-4">
               <div className="flex-1">
-                <DatePickerInput<TransactionFormData>
+                <DatePickerInput<TransactionFormInput>
                   name="date"
                   label="Data"
                   placeholder="Selecione"
                 />
               </div>
               <div className="flex-1">
-                <FormInput<TransactionFormData>
+                <FormInput<TransactionFormInput>
                   name="amount"
                   label="Valor"
                   placeholder="0,00"
@@ -223,7 +254,7 @@ export function TransactionDialog({
               </div>
             </div>
 
-            <FormSelect<TransactionFormData>
+            <FormSelect<TransactionFormInput>
               name="categoryId"
               label="Categoria"
               placeholder="Selecione"
@@ -238,8 +269,9 @@ export function TransactionDialog({
             <Button
               type="submit"
               className="h-12 w-full rounded-lg text-base font-medium text-white"
+              disabled={creating || updating}
             >
-              Salvar
+              {creating || updating ? 'Salvando...' : 'Salvar'}
             </Button>
           </form>
         </FormProvider>

@@ -1,5 +1,5 @@
+import { useQuery } from '@apollo/client/react'
 import { Plus } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
 import {
@@ -10,30 +10,26 @@ import {
   CardHeader,
 } from '@/components/ui/card'
 import {
-  useCategoriesSummary,
-  useLoadCategoriesSummary,
-} from '@/stores/categoriesSummary'
-import {
-  useCategories,
-  useCategoriesIsLoading,
-  useLoadCategories,
-} from '@/stores/categoryStore'
+  CATEGORIES,
+  CATEGORIES_SUMMARY,
+} from '@/lib/graphql/queries/categories'
 
 export default function Categories() {
-  const loadCategories = useLoadCategories()
-  const categoriesIsLoading = useCategoriesIsLoading()
-  const categories = useCategories()
-  const loadCategoriesSummary = useLoadCategoriesSummary()
-  const categoriesSummary = useCategoriesSummary()
-  const [_error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    setError(null)
-    Promise.all([loadCategoriesSummary(), loadCategories()]).catch(err =>
-      setError(err?.message || 'Erro ao carregar resumo de categorias')
-    )
-  }, [loadCategories, loadCategoriesSummary])
-
+  const {
+    loading: categoriesIsLoading,
+    error: categoriesError,
+    data: { categories = [] } = {},
+  } = useQuery(CATEGORIES)
+  const {
+    error: summaryError,
+    data: {
+      categoriesSummary: {
+        categoryCount = 0,
+        transactionCountByUser = 0,
+        mostUsedCategory = null,
+      } = {},
+    } = {},
+  } = useQuery(CATEGORIES_SUMMARY)
   return (
     <section className="w-full max-w-7xl mx-auto flex flex-col gap-6 ">
       <header className="flex items-center w-full mb-2">
@@ -63,7 +59,7 @@ export default function Categories() {
             <Icon name="tag" className="size-6" />
             <div className="flex flex-col">
               <span className="text-28xl font-bold">
-                {categoriesSummary.categoryCount}
+                {summaryError ? 0 : categoryCount}
               </span>
               <CardDescription className="text-xs text-gray-500 uppercase tracking-wider">
                 Total de categorias
@@ -76,7 +72,7 @@ export default function Categories() {
             <Icon name="arrow-down-up" color="purple" className="size-6" />
             <div className="flex flex-col">
               <h2 className="text-28xl font-bold">
-                {categoriesSummary.transactionCountByUser}
+                {summaryError ? 0 : transactionCountByUser}
               </h2>
               <CardDescription className="text-xs text-gray-500 uppercase tracking-wider">
                 Total de transações
@@ -87,14 +83,12 @@ export default function Categories() {
         <Card className="w-full p-6 bg-white">
           <CardHeader className="flex items-center gap-4">
             <Icon
-              name={categoriesSummary.mostUsedCategory?.icon}
-              color={categoriesSummary.mostUsedCategory?.color}
+              name={mostUsedCategory?.icon}
+              color={mostUsedCategory?.color}
               className="size-6"
             />
             <div className="flex flex-col">
-              <h2 className="text-28xl font-bold">
-                {categoriesSummary.mostUsedCategory?.title}
-              </h2>
+              <h2 className="text-28xl font-bold">{mostUsedCategory?.title}</h2>
               <CardDescription className="text-xs text-gray-500 uppercase tracking-wider">
                 Categoria mais utilizada
               </CardDescription>
@@ -103,6 +97,9 @@ export default function Categories() {
         </Card>
       </div>
       <div className="grid grid-cols-4 gap-4">
+        {categoriesError && (
+          <p className="text-red-500">Erro ao carregar categorias</p>
+        )}
         {categoriesIsLoading && <p>Carregando categorias...</p>}
         {!categoriesIsLoading &&
           categories.map(category => (

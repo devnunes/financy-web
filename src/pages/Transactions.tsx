@@ -1,36 +1,87 @@
-import { Edit2, Plus, Search, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@apollo/client/react'
+import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { FormInput } from '@/components/FormInput'
 import { FormSelect } from '@/components/FormSelect'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
+import { TransactionDeleteDialog } from '@/components/transactions/TransactionDeleteDialog'
 import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
 import { Button } from '@/components/ui/button'
-import { useLoadCategories } from '@/stores/categoryStore'
-import {
-  useLoadTransactions,
-  useTransactions,
-  useTransactionsIsLoading,
-} from '@/stores/transactionStore'
+import { TRANSACTIONS } from '@/lib/graphql/queries/transactions'
+import { formatTransaction } from '@/lib/utils'
+import { useSetSelectedTransaction } from '@/stores/transactionStore'
+import type { Transaction } from '@/types'
 
 export default function Transactions() {
-  const loading = useTransactionsIsLoading()
-  const transactions = useTransactions()
-  const loadTransactions = useLoadTransactions()
-  const loadCategories = useLoadCategories()
-  const [error, setError] = useState<string | null>(null)
+  const { loading, error, data: { transactions } = {} } = useQuery(TRANSACTIONS)
+
+  const parsedTransactions = useMemo(() => {
+    if (!transactions) return []
+    return transactions.map((transaction: Transaction) =>
+      formatTransaction(transaction)
+    )
+  }, [transactions])
+
   const [page, setPage] = useState(1)
   const resultsPerPage = 10
-  const totalResults = 27
-  const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
-    useState(false)
+  const totalResults = parsedTransactions.length
+  const totalPages = Math.max(1, Math.ceil(totalResults / resultsPerPage))
 
   useEffect(() => {
-    setError(null)
-    Promise.all([loadTransactions(), loadCategories()]).catch(err =>
-      setError(err?.message || 'Erro ao carregar transações')
-    )
-  }, [loadTransactions, loadCategories])
+    if (page > totalPages) {
+      setPage(totalPages)
+    }
+  }, [page, totalPages])
+
+  const paginatedTransactions = useMemo(() => {
+    const startIndex = (page - 1) * resultsPerPage
+    const endIndex = startIndex + resultsPerPage
+    return parsedTransactions.slice(startIndex, endIndex)
+  }, [page, parsedTransactions])
+
+  const pageNumbers = useMemo(
+    () => Array.from({ length: totalPages }, (_, index) => index + 1),
+    [totalPages]
+  )
+
+  const startResult = totalResults === 0 ? 0 : (page - 1) * resultsPerPage + 1
+  const endResult = Math.min(page * resultsPerPage, totalResults)
+
+  const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
+    useState(false)
+  const [toggleDeleteDialog, setToggleDeleteDialog] = useState(false)
+  const [transactionToDelete, setTransactionToDelete] = useState<
+    Pick<Transaction, 'id' | 'description'> | null
+  >(null)
+
+  const setSelectedTransaction = useSetSelectedTransaction()
+
+  const handleCreateNewTransaction = () => {
+    setSelectedTransaction(null)
+    setToggleNewTransactionDialog(true)
+  }
+
+  const handleDeleteTransaction = (transaction: Transaction) => {
+    setTransactionToDelete({
+      id: transaction.id,
+      description: transaction.description,
+    })
+    setToggleDeleteDialog(true)
+  }
+
+  const handleEditTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction)
+    setToggleNewTransactionDialog(true)
+  }
+
+  const handleDeleteDialogClose = (open: boolean) => {
+    setToggleDeleteDialog(open)
+
+    if (!open) {
+      setTransactionToDelete(null)
+    }
+  }
 
   return (
     <section
@@ -53,7 +104,7 @@ export default function Transactions() {
           className="ml-auto bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary-light"
           type="button"
           aria-label="Nova transação"
-          onClick={() => setToggleNewTransactionDialog(true)}
+          onClick={handleCreateNewTransaction}
         >
           <Plus size={16} /> Nova transação
         </Button>
@@ -103,10 +154,11 @@ export default function Transactions() {
                     colSpan={6}
                     className="px-6 py-8 text-center text-red-500"
                   >
-                    {error}
+                    {error.message ||
+                      'Ocorreu um erro ao carregar as transações.'}
                   </td>
                 </tr>
-              ) : transactions.length === 0 ? (
+              ) : !transactions || transactions.length === 0 ? (
                 <tr>
                   <td
                     colSpan={6}
@@ -116,83 +168,94 @@ export default function Transactions() {
                   </td>
                 </tr>
               ) : (
-                transactions
-                  .slice((page - 1) * resultsPerPage, page * resultsPerPage)
-                  .map(transaction => (
-                    <tr
-                      key={transaction.id}
-                      className="border-b border-gray-200"
-                    >
-                      <td className="px-6 py-4 flex items-center gap-3">
-                        <Icon
-                          name={transaction.category?.icon}
-                          color={transaction.category?.color}
-                          bgColor={transaction.category?.color}
-                        />
-                        <span className="text-base text-gray-800">
-                          {transaction.description}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        {transaction.dateLabel || transaction.date}
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <Tag
-                          text={
-                            transaction.category?.title ||
-                            transaction.categoryId
-                          }
-                          color={transaction.category?.color}
-                        />
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <Tag
-                          text={
-                            transaction.type === 'income' ? 'Entrada' : 'Saída'
-                          }
-                          color={
-                            transaction.type === 'income' ? 'green' : 'red'
-                          }
-                        />
-                      </td>
-                      <td className="px-6 py-4 text-end font-semibold">
-                        {transaction.type === 'income' ? '+' : '-'}{' '}
-                        {transaction.amountLabel || transaction.amount}
-                      </td>
-                      <td className="px-6 py-4 text-end flex items-center gap-2 justify-end">
-                        <button
-                          type="button"
-                          className="p-2 rounded hover:bg-gray-100"
-                          aria-label={`Editar transação ${transaction.description}`}
-                        >
-                          <Edit2 size={18} className="text-gray-500" />
-                        </button>
-                        <button
-                          type="button"
-                          className="p-2 rounded hover:bg-gray-100"
-                          aria-label={`Excluir transação ${transaction.description}`}
-                        >
-                          <Trash2 size={18} className="text-gray-500" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                paginatedTransactions.map(transaction => (
+                  <tr key={transaction.id} className="border-b border-gray-200">
+                    <td className="px-6 py-4 flex items-center gap-3">
+                      <Icon
+                        name={transaction.category?.icon}
+                        color={transaction.category?.color}
+                        bgColor={transaction.category?.color}
+                      />
+                      <span className="text-base text-gray-800">
+                        {transaction.description}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {transaction.dateLabel || transaction.date}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <Tag
+                        text={
+                          transaction.category?.title || transaction.categoryId
+                        }
+                        color={transaction.category?.color}
+                      />
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <Tag
+                        text={
+                          transaction.type === 'income' ? 'Entrada' : 'Saída'
+                        }
+                        color={transaction.type === 'income' ? 'green' : 'red'}
+                      />
+                    </td>
+                    <td className="px-6 py-4 text-end font-semibold">
+                      {transaction.type === 'income' ? '+' : '-'}{' '}
+                      {transaction.amountLabel}
+                    </td>
+                    <td className="px-6 py-4 text-end flex items-center gap-2 justify-end">
+                      <Icon
+                        name="trash"
+                        bgColor="gray"
+                        className="size-4 text-red-base"
+                        onClick={() => {
+                          handleDeleteTransaction(transaction)
+                        }}
+                      />
+                      <Icon
+                        name="edit"
+                        bgColor="gray"
+                        className="size-4"
+                        onClick={() => {
+                          handleEditTransaction(transaction)
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
         </div>
         <footer className="flex items-center justify-between px-6 py-4 bg-white border-t border-gray-200 text-sm text-gray-600">
           <span>
-            1 a {Math.min(page * resultsPerPage, totalResults)} | {totalResults}{' '}
-            resultados
+            {startResult} a {endResult} | {totalResults} resultados
           </span>
-          <nav aria-label="Paginação">
+          <nav
+            aria-label="Paginação"
+            className="flex min-w-55 items-center justify-end gap-1.5"
+          >
+            <button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={() =>
+                setPage(currentPage => Math.max(1, currentPage - 1))
+              }
+              disabled={page === 1}
+              aria-label="Página anterior"
+            >
+              <ChevronLeft size={16} />
+            </button>
             <ul className="inline-flex items-center gap-1">
-              {[1, 2, 3].map(p => (
+              {pageNumbers.map(p => (
                 <li key={p}>
                   <button
                     type="button"
-                    className={`w-8 h-8 rounded ${page === p ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    className={`h-8 w-8 rounded-lg border text-sm font-semibold ${
+                      page === p
+                        ? 'border-primary bg-primary text-white'
+                        : 'border-gray-300 bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
                     aria-current={page === p ? 'page' : undefined}
                     onClick={() => setPage(p)}
                   >
@@ -201,12 +264,31 @@ export default function Transactions() {
                 </li>
               ))}
             </ul>
+            <button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={() =>
+                setPage(currentPage => Math.min(totalPages, currentPage + 1))
+              }
+              disabled={page === totalPages}
+              aria-label="Próxima página"
+            >
+              <ChevronRight size={16} />
+            </button>
           </nav>
         </footer>
       </div>
       <TransactionDialog
         open={toggleNewTransactionDialog}
         onOpenChange={setToggleNewTransactionDialog}
+      />
+      <TransactionDeleteDialog
+        open={toggleDeleteDialog}
+        onOpenChange={handleDeleteDialogClose}
+        transaction={transactionToDelete}
+        onSuccess={() => {
+          setTransactionToDelete(null)
+        }}
       />
     </section>
   )

@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from 'react'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
+import { currencyFormatter } from '@/lib/utils'
 import type { Transaction } from '@/types'
 
 export interface TransactionRowProps extends HTMLAttributes<HTMLSpanElement> {
@@ -8,8 +9,10 @@ export interface TransactionRowProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 export function TransactionRow({ transaction }: TransactionRowProps) {
-  const amountLabel = transaction.amountLabel ?? String(transaction.amount)
+  const amountLabel =
+    transaction.amountLabel ?? currencyFormatter.format(transaction.amount)
   const dateLabel = transaction.dateLabel ?? transaction.date
+
   return (
     <div className="grid grid-cols-[1fr_150px_136px] xl:grid-cols-[405px_150px_136px] gap-4 p-6 h-20 justify-center items-center border-b border-gray-200">
       <div className="flex gap-5">
