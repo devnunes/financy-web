@@ -7,11 +7,9 @@ export const SIGN_UP: TypedDocumentNode<
 > = gql`
   mutation SignUp($data: AuthInput!) {
     signUp(data: $data) {
-      user {
-        id
-        name
-        email
-      }
+      id
+      name
+      email
     }
   }
 `

@@ -7,12 +7,6 @@ import { ME } from '@/lib/graphql/queries/me'
 import { REFRESH_TOKEN } from '@/lib/graphql/queries/refreshToken'
 import type { AuthInput, AuthOutput, SignInInput, User } from '@/types'
 
-type SignUpMutationResponse = {
-  signUp: {
-    user: User
-  }
-}
-
 type SignOutMutationResponse = {
   signOut: boolean
 }
@@ -138,7 +132,7 @@ const useAuthStore = create<AuthState>()(
     async function signUp(signUpData: AuthInput) {
       try {
         const { data } = await apolloClient.mutate<
-          SignUpMutationResponse,
+          { signUp: AuthOutput },
           { data: AuthInput }
         >({
           mutation: SIGN_UP,
@@ -151,8 +145,8 @@ const useAuthStore = create<AuthState>()(
           },
         })
         if (!data?.signUp) throw new Error('SignUp failed')
-        const { user } = data.signUp
-        const userWithInitials = withInitials(user)
+        const { id, email, name } = data.signUp
+        const userWithInitials = withInitials({ id, email, name })
         set(state => {
           state.user = userWithInitials
           state.isAuthenticated = true
