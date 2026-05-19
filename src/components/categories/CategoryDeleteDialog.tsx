@@ -9,45 +9,43 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { DELETE_TRANSACTION } from '@/lib/graphql/mutations/transactions'
-import {
-  TRANSACTIONS,
-  TRANSACTIONS_ALL_VARIABLES,
-  TRANSACTIONS_RECENT_VARIABLES,
-} from '@/lib/graphql/queries/transactions'
 
-interface TransactionDeleteDialogProps {
+import { DELETE_CATEGORY } from '@/lib/graphql/mutations/categories'
+import {
+  CATEGORIES,
+  CATEGORIES_ALL_VARIABLES,
+  CATEGORIES_RECENT_VARIABLES,
+} from '@/lib/graphql/queries/categories'
+
+interface CategoryDeleteDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  transaction?: {
+  category?: {
     id: string
-    description: string
+    title: string
   } | null
   onSuccess?: () => void
 }
 
-export function TransactionDeleteDialog({
+export function CategoryDeleteDialog({
   open,
   onOpenChange,
-  transaction,
+  category,
   onSuccess,
-}: TransactionDeleteDialogProps) {
-  const [deleteTransaction, { loading: deleting }] = useMutation(
-    DELETE_TRANSACTION,
-    {
-      refetchQueries: [
-        { query: TRANSACTIONS, variables: TRANSACTIONS_ALL_VARIABLES },
-        { query: TRANSACTIONS, variables: TRANSACTIONS_RECENT_VARIABLES },
-      ],
-      awaitRefetchQueries: true,
-    }
-  )
+}: CategoryDeleteDialogProps) {
+  const [deleteCategory, { loading: deleting }] = useMutation(DELETE_CATEGORY, {
+    refetchQueries: [
+      { query: CATEGORIES, variables: CATEGORIES_ALL_VARIABLES },
+      { query: CATEGORIES, variables: CATEGORIES_RECENT_VARIABLES },
+    ],
+    awaitRefetchQueries: true,
+  })
 
   const handleConfirmDelete = async () => {
-    if (!transaction) return
+    if (!category) return
 
-    await deleteTransaction({
-      variables: { id: transaction.id },
+    await deleteCategory({
+      variables: { id: category.id },
     })
     onSuccess?.()
     onOpenChange(false)
@@ -61,14 +59,14 @@ export function TransactionDeleteDialog({
             <AlertTriangle className="size-5 text-red-base" />
           </div>
           <DialogTitle className="text-center text-base leading-6 font-semibold text-gray-800">
-            Excluir transação?
+            Excluir categoria?
           </DialogTitle>
           <DialogDescription className="text-center text-sm leading-5 text-gray-600">
-            {transaction ? (
+            {category ? (
               <>
-                Você está prestes a excluir a transação{' '}
+                Você está prestes a excluir a categoria{' '}
                 <span className="font-semibold text-gray-800">
-                  {transaction.description}
+                  {category.title}
                 </span>
                 . Esta ação não pode ser desfeita.
               </>
@@ -92,7 +90,7 @@ export function TransactionDeleteDialog({
             type="button"
             className="h-12 rounded-lg bg-red-base text-base font-medium text-white hover:bg-red-dark"
             onClick={handleConfirmDelete}
-            disabled={deleting || !transaction}
+            disabled={deleting || !category}
           >
             {deleting ? 'Excluindo...' : 'Excluir'}
           </Button>

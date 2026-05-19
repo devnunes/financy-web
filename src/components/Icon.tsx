@@ -4,7 +4,7 @@ import { cn, tv } from 'tailwind-variants'
 import type { TagColor } from '@/types'
 
 const iconWrapperStyles = tv({
-  base: 'inline-flex bg-transparent items-start rounded-lg',
+  base: 'inline-flex items-start rounded-lg',
   variants: {
     bgColor: {
       transparent: 'bg-transparent',
@@ -72,7 +72,13 @@ const Icon = ({
   }, [name])
 
   return (
-    <span className={cn(iconWrapperStyles({ bgColor }))} {...props}>
+    <span
+      className={cn(
+        'flex items-center justify-center',
+        iconWrapperStyles({ bgColor })
+      )}
+      {...props}
+    >
       <Suspense fallback={null}>
         <LucideIcon className={cn(iconStyles({ color }), className)} />
       </Suspense>

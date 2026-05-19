@@ -6,6 +6,7 @@ import type { Transaction } from '@/types'
 interface TransactionState {
   selectedTransaction: Transaction | null
   setSelectedTransaction: (transaction: Transaction | null) => void
+  clearSelectedTransaction: () => void
 }
 
 const useTransactionStore = create<TransactionState>()(
@@ -28,9 +29,16 @@ const useTransactionStore = create<TransactionState>()(
       }
     }
 
+    function clearSelectedTransaction() {
+      set(state => {
+        state.selectedTransaction = null
+      })
+    }
+
     return {
       selectedTransaction: null,
       setSelectedTransaction,
+      clearSelectedTransaction,
     }
   })
 )
@@ -40,3 +48,6 @@ export const useSelectedTransaction = () =>
 
 export const useSetSelectedTransaction = () =>
   useTransactionStore(state => state.setSelectedTransaction)
+
+export const useClearSelectedTransaction = () =>
+  useTransactionStore(state => state.clearSelectedTransaction)

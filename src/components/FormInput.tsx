@@ -132,7 +132,9 @@ export function FormInput<TFieldValues extends FieldValues = FieldValues>({
       {effectiveErrorText ? (
         <FieldError>{effectiveErrorText}</FieldError>
       ) : helperText ? (
-        <span className="text-xs text-muted-foreground">{helperText}</span>
+        <span className="text-xs text-gray-500 text-muted-foreground">
+          {helperText}
+        </span>
       ) : null}
     </Field>
   )

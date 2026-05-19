@@ -35,8 +35,8 @@ import {
 } from '@/lib/schemas/transaction'
 import { cn, formatAmountToString } from '@/lib/utils'
 import {
+  useClearSelectedTransaction,
   useSelectedTransaction,
-  useSetSelectedTransaction,
 } from '@/stores/transactionStore'
 import { DatePickerInput } from '../DatePickerInput'
 
@@ -65,7 +65,7 @@ export function TransactionDialog({
   onSuccess,
 }: TransactionDialogProps) {
   const transaction = useSelectedTransaction()
-  const setSelectedTransaction = useSetSelectedTransaction()
+  const clearSelectedTransaction = useClearSelectedTransaction()
   const [transactionType, setTransactionType] = useState<'expense' | 'income'>(
     transaction ? transaction.type : 'expense'
   )
@@ -148,16 +148,32 @@ export function TransactionDialog({
       await createTransaction({ variables: { data: payload } })
     }
 
-    setSelectedTransaction(null)
+    clearSelectedTransaction()
     onSuccess?.()
     methods.reset()
-    onOpenChange(false)
+    handleDialogOpenChange(false)
+  }
+
+  const handleDialogOpenChange = (nextOpen: boolean) => {
+    onOpenChange(nextOpen)
+
+    if (!nextOpen) {
+      clearSelectedTransaction()
+      setTransactionType('expense')
+      methods.reset({
+        type: 'expense',
+        description: '',
+        date: '',
+        amount: '',
+        categoryId: '',
+      })
+    }
   }
 
   const amountValue = methods.watch('amount')
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent
         showCloseButton={false}
         className="max-w-140 gap-6 rounded-xl bg-white p-6.25"

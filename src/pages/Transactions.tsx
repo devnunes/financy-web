@@ -6,23 +6,27 @@ import { FormSelect } from '@/components/FormSelect'
 import Icon from '@/components/Icon'
 import { Tag } from '@/components/Tag'
 import { TransactionDeleteDialog } from '@/components/transactions/TransactionDeleteDialog'
-import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
+import { TransactionDialog } from '@/components/transactions/TransactionDialog'
 import { Button } from '@/components/ui/button'
 import {
   TRANSACTIONS,
   TRANSACTIONS_ALL_VARIABLES,
 } from '@/lib/graphql/queries/transactions'
 import { formatTransaction } from '@/lib/utils'
-import { useSetSelectedTransaction } from '@/stores/transactionStore'
+import {
+  useClearSelectedTransaction,
+  useSetSelectedTransaction,
+} from '@/stores/transactionStore'
 import type { Transaction } from '@/types'
 
 export default function Transactions() {
-  const { loading, error, data: { transactions } = {} } = useQuery(
-    TRANSACTIONS,
-    {
-      variables: TRANSACTIONS_ALL_VARIABLES,
-    }
-  )
+  const {
+    loading,
+    error,
+    data: { transactions } = {},
+  } = useQuery(TRANSACTIONS, {
+    variables: TRANSACTIONS_ALL_VARIABLES,
+  })
 
   const parsedTransactions = useMemo(() => {
     if (!transactions) return []
@@ -59,14 +63,16 @@ export default function Transactions() {
   const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
     useState(false)
   const [toggleDeleteDialog, setToggleDeleteDialog] = useState(false)
-  const [transactionToDelete, setTransactionToDelete] = useState<
-    Pick<Transaction, 'id' | 'description'> | null
-  >(null)
+  const [transactionToDelete, setTransactionToDelete] = useState<Pick<
+    Transaction,
+    'id' | 'description'
+  > | null>(null)
 
   const setSelectedTransaction = useSetSelectedTransaction()
+  const clearSelectedTransaction = useClearSelectedTransaction()
 
   const handleCreateNewTransaction = () => {
-    setSelectedTransaction(null)
+    clearSelectedTransaction()
     setToggleNewTransactionDialog(true)
   }
 
@@ -88,6 +94,14 @@ export default function Transactions() {
 
     if (!open) {
       setTransactionToDelete(null)
+    }
+  }
+
+  const handleTransactionDialogClose = (open: boolean) => {
+    setToggleNewTransactionDialog(open)
+
+    if (!open) {
+      clearSelectedTransaction()
     }
   }
 
@@ -288,7 +302,7 @@ export default function Transactions() {
       </div>
       <TransactionDialog
         open={toggleNewTransactionDialog}
-        onOpenChange={setToggleNewTransactionDialog}
+        onOpenChange={handleTransactionDialogClose}
       />
       <TransactionDeleteDialog
         open={toggleDeleteDialog}

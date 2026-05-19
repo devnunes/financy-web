@@ -2,13 +2,14 @@ import { useQuery } from '@apollo/client/react'
 import { ChevronRight, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import CustomLink from '@/components/CustomLink'
-import { TransactionDialog } from '@/components/transactions/TrasactionDialog'
+import { TransactionDialog } from '@/components/transactions/TransactionDialog'
 import { Button } from '@/components/ui/button'
 import {
   TRANSACTIONS,
   TRANSACTIONS_RECENT_VARIABLES,
 } from '@/lib/graphql/queries/transactions'
 import { formatTransaction } from '@/lib/utils'
+import { useClearSelectedTransaction } from '@/stores/transactionStore'
 import type { Transaction } from '@/types'
 import { TransactionRow } from './TransactionRow'
 
@@ -30,6 +31,20 @@ export default function TransactionsCard() {
 
   const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
     useState(false)
+  const clearSelectedTransaction = useClearSelectedTransaction()
+
+  const handleCreateNewTransaction = () => {
+    clearSelectedTransaction()
+    setToggleNewTransactionDialog(true)
+  }
+
+  const handleTransactionDialogClose = (open: boolean) => {
+    setToggleNewTransactionDialog(open)
+
+    if (!open) {
+      clearSelectedTransaction()
+    }
+  }
 
   return (
     <article className="xl:col-span-2 rounded-xl border border-gray-200 bg-white overflow-hidden">
@@ -60,7 +75,7 @@ export default function TransactionsCard() {
       </div>
 
       <Button
-        onClick={() => setToggleNewTransactionDialog(true)}
+        onClick={handleCreateNewTransaction}
         aria-label="Nova transação"
         type="button"
         className="h-14 w-full border-0 bg-white text-sm/20 font-medium flex items-center justify-center gap-2 hover:text-primary-dark"
@@ -70,7 +85,7 @@ export default function TransactionsCard() {
       </Button>
       <TransactionDialog
         open={toggleNewTransactionDialog}
-        onOpenChange={setToggleNewTransactionDialog}
+        onOpenChange={handleTransactionDialogClose}
       />
     </article>
   )
