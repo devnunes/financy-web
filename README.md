@@ -58,10 +58,10 @@ Frontend URL: `http://localhost:5173`
 
 ## Current Feature Status
 
-- Authentication (sign in, sign up, session sync with `me`): available
-- Public and protected routing: available
+- Authentication (sign in, sign up, session sync with `me`): implemented
+- Public and protected routing: implemented
 - Authenticated routes: `/dashboard`, `/transactions`, `/categories`, `/profile`
-- Dashboard, transactions, and categories pages: available and under active UI iteration
+- Dashboard, transactions, and categories pages: todas as funcionalidades do desafio implementadas e estáveis
 
 ## Project Structure
 
