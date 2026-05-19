@@ -51,7 +51,6 @@ export default function Transactions() {
     categoryOptions,
     periodOptions,
     filterSignature,
-    clearFilters,
   } = useTransactionsFilters({
     transactions,
     categories,
@@ -66,7 +65,6 @@ export default function Transactions() {
     pageNumbers,
     startResult,
     endResult,
-    resetPagination,
   } = useTransactionsPagination(filteredTransactions, 10, filterSignature)
 
   const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
