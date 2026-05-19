@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client/react'
 import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
+import { FormProvider } from 'react-hook-form'
 import { FormInput } from '@/components/FormInput'
 import { FormSelect } from '@/components/FormSelect'
 import Icon from '@/components/Icon'
@@ -9,10 +10,19 @@ import { TransactionDeleteDialog } from '@/components/transactions/TransactionDe
 import { TransactionDialog } from '@/components/transactions/TransactionDialog'
 import { Button } from '@/components/ui/button'
 import {
+  TRANSACTION_TYPE_OPTIONS,
+  type TransactionsFilterValues,
+  useTransactionsFilters,
+} from '@/hooks/useTransactionsFilters'
+import { useTransactionsPagination } from '@/hooks/useTransactionsPagination'
+import {
+  CATEGORIES_ALL_VARIABLES,
+  CATEGORIES_FILTER_OPTIONS,
+} from '@/lib/graphql/queries/categories'
+import {
   TRANSACTIONS,
   TRANSACTIONS_ALL_VARIABLES,
 } from '@/lib/graphql/queries/transactions'
-import { formatTransaction } from '@/lib/utils'
 import {
   useClearSelectedTransaction,
   useSetSelectedTransaction,
@@ -27,38 +37,37 @@ export default function Transactions() {
   } = useQuery(TRANSACTIONS, {
     variables: TRANSACTIONS_ALL_VARIABLES,
   })
-
-  const parsedTransactions = useMemo(() => {
-    if (!transactions) return []
-    return transactions.map((transaction: Transaction) =>
-      formatTransaction(transaction)
-    )
-  }, [transactions])
-
-  const [page, setPage] = useState(1)
-  const resultsPerPage = 10
-  const totalResults = parsedTransactions.length
-  const totalPages = Math.max(1, Math.ceil(totalResults / resultsPerPage))
-
-  useEffect(() => {
-    if (page > totalPages) {
-      setPage(totalPages)
+  const { data: { categories = [] } = {} } = useQuery(
+    CATEGORIES_FILTER_OPTIONS,
+    {
+      variables: CATEGORIES_ALL_VARIABLES,
     }
-  }, [page, totalPages])
-
-  const paginatedTransactions = useMemo(() => {
-    const startIndex = (page - 1) * resultsPerPage
-    const endIndex = startIndex + resultsPerPage
-    return parsedTransactions.slice(startIndex, endIndex)
-  }, [page, parsedTransactions])
-
-  const pageNumbers = useMemo(
-    () => Array.from({ length: totalPages }, (_, index) => index + 1),
-    [totalPages]
   )
 
-  const startResult = totalResults === 0 ? 0 : (page - 1) * resultsPerPage + 1
-  const endResult = Math.min(page * resultsPerPage, totalResults)
+  const {
+    filterFormMethods,
+    parsedTransactions,
+    filteredTransactions,
+    categoryOptions,
+    periodOptions,
+    filterSignature,
+    clearFilters,
+  } = useTransactionsFilters({
+    transactions,
+    categories,
+  })
+
+  const {
+    page,
+    setPage,
+    totalResults,
+    totalPages,
+    paginatedItems: paginatedTransactions,
+    pageNumbers,
+    startResult,
+    endResult,
+    resetPagination,
+  } = useTransactionsPagination(filteredTransactions, 10, filterSignature)
 
   const [toggleNewTransactionDialog, setToggleNewTransactionDialog] =
     useState(false)
@@ -132,20 +141,40 @@ export default function Transactions() {
         </Button>
       </header>
 
-      <form
-        className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-gray-200 rounded-xl px-6 py-5 mb-2"
-        aria-label="Filtros de transações"
-      >
-        <FormInput
-          name="Buscar"
-          label="Buscar"
-          placeholder="Buscar por descrição"
-          leftIcon={<Search className="text-gray-400" size={16} />}
-        />
-        <FormSelect name="Tipo" label="Tipo" placeholder="Todos" />
-        <FormSelect name="Categoria" label="Categoria" placeholder="Todas" />
-        <FormSelect name="Periodo" label="Período" placeholder="Todos" />
-      </form>
+      <FormProvider {...filterFormMethods}>
+        <form
+          className="w-full grid grid-cols-1 md:grid-cols-4 gap-4 bg-white border border-gray-200 rounded-xl px-6 py-5 mb-2"
+          aria-label="Filtros de transações"
+          onSubmit={event => {
+            event.preventDefault()
+          }}
+        >
+          <FormInput<TransactionsFilterValues>
+            name="search"
+            label="Buscar"
+            placeholder="Buscar por descrição"
+            leftIcon={<Search className="text-gray-400" size={16} />}
+          />
+          <FormSelect<TransactionsFilterValues>
+            name="type"
+            label="Tipo"
+            options={TRANSACTION_TYPE_OPTIONS.map(option => ({
+              value: option.value,
+              label: option.label,
+            }))}
+          />
+          <FormSelect<TransactionsFilterValues>
+            name="categoryId"
+            label="Categoria"
+            options={categoryOptions}
+          />
+          <FormSelect<TransactionsFilterValues>
+            name="period"
+            label="Período"
+            options={periodOptions}
+          />
+        </form>
+      </FormProvider>
 
       <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
         <div className="w-full overflow-x-auto">
@@ -180,13 +209,22 @@ export default function Transactions() {
                       'Ocorreu um erro ao carregar as transações.'}
                   </td>
                 </tr>
-              ) : !transactions || transactions.length === 0 ? (
+              ) : parsedTransactions.length === 0 ? (
                 <tr>
                   <td
                     colSpan={6}
                     className="px-6 py-8 text-center text-gray-500"
                   >
                     Nenhuma transação encontrada.
+                  </td>
+                </tr>
+              ) : paginatedTransactions.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-6 py-8 text-center text-gray-500"
+                  >
+                    Nenhuma transação encontrada para os filtros aplicados.
                   </td>
                 </tr>
               ) : (

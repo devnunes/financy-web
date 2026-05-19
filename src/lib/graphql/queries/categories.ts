@@ -26,6 +26,18 @@ export const CATEGORIES: TypedDocumentNode<
   }
 `
 
+export const CATEGORIES_FILTER_OPTIONS: TypedDocumentNode<
+  { categories: Pick<Category, 'id' | 'title'>[] },
+  CategoriesQueryVariables
+> = gql`
+  query CategoriesFilterOptions($data: CategoriesFilterInput!) {
+    categories(data: $data) {
+      id
+      title
+    }
+  }
+`
+
 export const CATEGORIES_ALL_VARIABLES: CategoriesQueryVariables = {
   data: {},
 }

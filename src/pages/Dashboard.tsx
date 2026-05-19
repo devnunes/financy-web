@@ -22,7 +22,7 @@ export default function Dashboard() {
             </span>
           </div>
           <strong className="text-28xl/32 font-bold text-gray-800 leading-tight line">
-            {error ? 0 : (userBalance?.balance ?? 0)}
+            {error ? 0 : currencyFormatter.format(userBalance?.balance ?? 0)}
           </strong>
         </article>
         <article
