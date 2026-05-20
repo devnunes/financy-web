@@ -34,35 +34,45 @@ Development proxy behavior:
 
 - Vite proxies `/graphql` to `http://localhost:3333`
 - This allows local frontend calls without hardcoding an absolute API URL
+pnpm lint:biome   # run biome lint
 
-## Run Locally
+# Financy Web
 
-1. Start backend in a separate terminal:
+Frontend application for the Financy project.
 
-```bash
-cd ../financy-server
-pnpm install
-# Configure .env.dev first (see financy-server README)
-pnpm dev
-```
+---
 
-2. Start frontend:
+## 🏁 First Time Setup
 
-```bash
-pnpm install
-pnpm dev
-```
+If you are new to programming, start from the [main README](../README.md) for a step-by-step guide to running the full project (backend + frontend).
 
-Frontend URL: `http://localhost:5173`
+---
 
-## Current Feature Status
+## ⚙️ Local Development (Frontend Only)
 
-- Authentication (sign in, sign up, session sync with `me`): implemented
-- Public and protected routing: implemented
-- Authenticated routes: `/dashboard`, `/transactions`, `/categories`, `/profile`
-- Dashboard, transactions, and categories pages: todas as funcionalidades do desafio implementadas e estáveis
+**Note:** The backend must be running for the frontend to work. See [financy-server/README.md](../financy-server/README.md) for backend setup.
 
-## Project Structure
+1. **Install dependencies**
+	```bash
+	pnpm install
+	```
+2. **Start the frontend**
+	```bash
+	pnpm dev
+	```
+
+Frontend app: http://localhost:5173
+
+---
+
+## 🔗 Backend Integration
+
+- Apollo Client uses `VITE_BACKEND_URL` and sends cookies with `credentials: include`.
+- Vite proxies `/graphql` to `http://localhost:3333` for local development.
+
+---
+
+## 📂 Project Structure
 
 - `src/pages`: application pages
 - `src/router`: routing and route guards
@@ -70,8 +80,11 @@ Frontend URL: `http://localhost:5173`
 - `src/stores`: global state stores
 - `src/components`: reusable UI components
 
-## Scripts
+---
 
+## 🧪 Scripts & Quality
+
+Common scripts:
 ```bash
 pnpm dev          # start Vite development server
 pnpm build        # run TypeScript build and create production bundle
@@ -81,3 +94,12 @@ pnpm lint         # run biome check
 pnpm lint:biome   # run biome lint
 pnpm check:biome  # run biome check
 ```
+
+---
+
+## ✅ Current Feature Status
+
+- Authentication (sign in, sign up, session sync with `me`): implemented
+- Public and protected routing: implemented
+- Authenticated routes: `/dashboard`, `/transactions`, `/categories`, `/profile`
+- Dashboard, transactions, and categories pages: todas as funcionalidades do desafio implementadas e estáveis
