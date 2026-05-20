@@ -56,10 +56,6 @@
   --text-28xl: 1.75rem;
 }
 
-:root {
-  
-}
-
 @layer base {
   html {
     @apply overflow-y-scroll;

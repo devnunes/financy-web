@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist"]
+    "includes": ["**", "!!**/dist", "!!**/tsconfig*.json"]
   },
   "formatter": {
     "enabled": true,
@@ -26,6 +26,14 @@
       "arrowParentheses": "asNeeded",
       "jsxQuoteStyle": "double",
       "trailingCommas": "es5"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    },
+    "formatter": {
+      "enabled": false
     }
   },
   "assist": {

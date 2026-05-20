@@ -13,7 +13,11 @@ export function CategoryIcons({ value, iconName }: CategoryIconsProps) {
       value={value}
       aria-label={`Selecionar ${value}`}
     >
-      <Icon name={iconName} bgColor="transparent" className="size-5 text-current" />
+      <Icon
+        name={iconName}
+        bgColor="transparent"
+        className="size-5 text-current"
+      />
     </ToggleGroupItem>
   )
 }
