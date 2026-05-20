@@ -27,8 +27,7 @@ Deliver the web interface for user authentication and financial management, cons
 
 Apollo Client behavior:
 
-- Uses `VITE_GRAPHQL_URL` when provided
-- Falls back to `/graphql` when `VITE_GRAPHQL_URL` is not set
+- Uses `VITE_BACKEND_URL`
 - Sends cookies with `credentials: include`
 
 Development proxy behavior:

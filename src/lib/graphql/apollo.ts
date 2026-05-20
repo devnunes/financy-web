@@ -9,6 +9,7 @@ import {
   CombinedProtocolErrors,
 } from '@apollo/client/errors'
 import { ErrorLink } from '@apollo/client/link/error'
+import { env } from '@/env'
 
 type ApolloAuthHandlers = {
   getIsRefreshing: () => boolean
@@ -73,7 +74,7 @@ const authErrorLink = new ErrorLink(({ error, operation }) => {
   }
 })
 
-const graphqlUri = import.meta.env.VITE_GRAPHQL_URL || '/graphql'
+const graphqlUri = env.VITE_BACKEND_URL
 
 const httpLink = new HttpLink({
   uri: graphqlUri,
