@@ -11,10 +11,18 @@ import {
 } from '@/components/ui/dialog'
 import { DELETE_TRANSACTION } from '@/lib/graphql/mutations/transactions'
 import {
+  CATEGORIES,
+  CATEGORIES_ALL_VARIABLES,
+  CATEGORIES_RECENT_VARIABLES,
+  CATEGORIES_SUMMARY,
+  CATEGORIES_SUMMARY_VARIABLES,
+} from '@/lib/graphql/queries/categories'
+import {
   TRANSACTIONS,
   TRANSACTIONS_ALL_VARIABLES,
   TRANSACTIONS_RECENT_VARIABLES,
 } from '@/lib/graphql/queries/transactions'
+import { USER_BALANCE } from '@/lib/graphql/queries/user'
 
 interface TransactionDeleteDialogProps {
   open: boolean
@@ -38,6 +46,10 @@ export function TransactionDeleteDialog({
       refetchQueries: [
         { query: TRANSACTIONS, variables: TRANSACTIONS_ALL_VARIABLES },
         { query: TRANSACTIONS, variables: TRANSACTIONS_RECENT_VARIABLES },
+        { query: CATEGORIES, variables: CATEGORIES_ALL_VARIABLES },
+        { query: CATEGORIES, variables: CATEGORIES_RECENT_VARIABLES },
+        { query: CATEGORIES_SUMMARY, variables: CATEGORIES_SUMMARY_VARIABLES },
+        { query: USER_BALANCE },
       ],
       awaitRefetchQueries: true,
     }

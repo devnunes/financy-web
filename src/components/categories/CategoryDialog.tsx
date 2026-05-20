@@ -21,6 +21,8 @@ import {
   CATEGORIES,
   CATEGORIES_ALL_VARIABLES,
   CATEGORIES_RECENT_VARIABLES,
+  CATEGORIES_SUMMARY,
+  CATEGORIES_SUMMARY_VARIABLES,
 } from '@/lib/graphql/queries/categories'
 import {
   type CategoryFormInput,
@@ -81,6 +83,7 @@ export function CategoryDialog({
     refetchQueries: [
       { query: CATEGORIES, variables: CATEGORIES_ALL_VARIABLES },
       { query: CATEGORIES, variables: CATEGORIES_RECENT_VARIABLES },
+      { query: CATEGORIES_SUMMARY, variables: CATEGORIES_SUMMARY_VARIABLES },
     ],
     awaitRefetchQueries: true,
   })
@@ -89,6 +92,7 @@ export function CategoryDialog({
     refetchQueries: [
       { query: CATEGORIES, variables: CATEGORIES_ALL_VARIABLES },
       { query: CATEGORIES, variables: CATEGORIES_RECENT_VARIABLES },
+      { query: CATEGORIES_SUMMARY, variables: CATEGORIES_SUMMARY_VARIABLES },
     ],
     awaitRefetchQueries: true,
   })
