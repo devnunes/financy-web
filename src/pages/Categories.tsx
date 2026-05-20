@@ -17,7 +17,6 @@ import {
   CATEGORIES,
   CATEGORIES_ALL_VARIABLES,
   CATEGORIES_SUMMARY,
-  CATEGORIES_SUMMARY_VARIABLES,
 } from '@/lib/graphql/queries/categories'
 import {
   useClearSelectedCategory,
@@ -43,7 +42,7 @@ export default function Categories() {
       } = {},
     } = {},
   } = useQuery(CATEGORIES_SUMMARY, {
-    variables: CATEGORIES_SUMMARY_VARIABLES,
+    variables: CATEGORIES_ALL_VARIABLES,
   })
 
   const [toggleNewCategoryDialog, setToggleNewCategoryDialog] = useState(false)
