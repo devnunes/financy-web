@@ -1,2 +1,5 @@
 allowBuilds:
   msw: false
+minimumReleaseAgeExclude:
+  - '@types/node@25.9.1'
+  - '@types/react@19.2.15'
